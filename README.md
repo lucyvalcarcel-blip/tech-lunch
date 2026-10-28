@@ -1,58 +1,191 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TECH-LUNCH
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema web de pedidos del cafetín **Astrid Catering** (Tecsup Ate). Permite a los estudiantes, docentes y personal de Tecsup ver el menú, hacer pedidos, pagar con Yape o Plin y recoger su comida en el cafetín o recibirla en su aula, sin hacer cola.
 
-## About Laravel
+Proyecto del curso **Desarrollo de Aplicaciones en Internet** (3 C24), Tecsup, ciclo 2026-II.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Grupo 1
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Integrante |
+|---|
+| Morales Lecca, Fabrizio |
+| Silva Silva, Ingrid |
+| Valcarcel Cabia, Lucy |
+| Zumaran Palomino, Gabriel |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tecnologías
 
-## Learning Laravel
+- PHP 8.3 o superior
+- Laravel 13
+- MySQL (más adelante; por ahora SQLite)
+- Vite
+- Git y GitHub
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Guía para el grupo
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Sigue estos pasos **una sola vez** en tu laptop. Todos los comandos se escriben en la terminal de Visual Studio Code (*Terminal → New Terminal*).
 
-## Agentic Development
+> En los recuadros, escribe solo el comando. El texto `PS C:\...>` que aparece en la terminal **no se escribe**: solo indica en qué carpeta estás.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Paso 1. Revisar los programas
 
-```bash
-composer require laravel/boost --dev
+Escribe uno por uno:
 
-php artisan boost:install
+```
+php -v
+composer -V
+node -v
+npm -v
+git --version
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Debe salir la versión de cada uno. PHP debe ser **8.3 o más**.
 
-## Contributing
+Si `git` da error, instálalo con este comando, acepta con `Y` y luego **cierra y vuelve a abrir VS Code**:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+winget install --id Git.Git -e --source winget
+```
 
-## Code of Conduct
+Si falta PHP, Composer o Node.js, revisa la guía del **Laboratorio 08**.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Paso 2. Configurar Git (solo la primera vez)
 
-## Security Vulnerabilities
+Usa tu nombre y **el mismo correo de tu cuenta de GitHub**:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+git config --global user.name "Tu Nombre"
+git config --global user.email "tu-correo@ejemplo.com"
+git config --global init.defaultBranch main
+git config --global core.autocrlf true
+```
 
-## License
+Para revisar:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+git config --global --list
+```
+
+## Paso 3. Crear tu llave SSH y registrarla en GitHub
+
+La llave SSH conecta tu laptop con tu cuenta de GitHub.
+
+1. Crea la llave (cambia el correo por el tuyo):
+
+   ```
+   ssh-keygen -t ed25519 -C "tu-correo@ejemplo.com"
+   ```
+
+   - En `Enter file in which to save the key` presiona **Enter**.
+   - En `Enter passphrase` escribe una contraseña para la llave (no se ve al escribir) o presiona **Enter** para dejarla vacía. **Si pones una, recuérdala**: la pedirá cada vez que subas cambios.
+
+2. Muestra tu llave **pública**:
+
+   ```
+   cat ~/.ssh/id_ed25519.pub
+   ```
+
+   Copia **solo** la línea que empieza con `ssh-ed25519` y termina con tu correo.
+
+3. En GitHub: foto de perfil → **Settings** → **SSH and GPG keys** → **New SSH key**.
+   - **Title:** `Laptop Tu Nombre`
+   - **Key:** pega la línea copiada
+   - **Add SSH key**
+
+4. Prueba la conexión:
+
+   ```
+   ssh -T git@github.com
+   ```
+
+   La primera vez escribe `yes`. Debe decir: `Hi tu-usuario! You've successfully authenticated`.
+
+> **Nunca compartas** el archivo `id_ed25519` (sin `.pub`). Esa es tu llave privada.
+
+## Paso 4. Aceptar la invitación
+
+Lucy te invitará como colaborador del repositorio. Te llegará un correo de GitHub: haz clic en **Accept invitation**. Sin esto no podrás subir cambios.
+
+## Paso 5. Descargar el proyecto
+
+1. Crea la carpeta `C:\proyecto` (sin espacios ni tildes, y fuera de OneDrive).
+2. En VS Code abre esa carpeta (*File → Open Folder*) y abre la terminal.
+3. Descarga el proyecto:
+
+   ```
+   git clone git@github.com:lucyvalcarcel-blip/tech-lunch.git
+   ```
+
+4. Abre la carpeta del proyecto: *File → Open Folder* → `C:\proyecto\tech-lunch`. Arriba del explorador debe decir **TECH-LUNCH**.
+
+## Paso 6. Instalar el proyecto
+
+En la terminal (debe decir `PS C:\proyecto\tech-lunch>`):
+
+```
+composer run setup
+```
+
+Este comando instala todo, crea el archivo `.env`, genera la clave de la aplicación y prepara la base de datos. Tarda unos minutos.
+
+## Paso 7. Ejecutar el proyecto
+
+```
+composer run dev
+```
+
+Abre en el navegador: **http://127.0.0.1:8000**
+
+Para detenerlo, presiona `Ctrl + C` en la terminal.
+
+**Si `composer run dev` da error**, usa dos terminales (botón **+** de la terminal):
+
+- Terminal 1: `php artisan serve`
+- Terminal 2: `npm run dev`
+
+---
+
+# Cómo trabajamos todos los días
+
+### Antes de empezar: traer los cambios del grupo
+
+```
+git pull
+```
+
+Hazlo **siempre** antes de trabajar, para tener lo último que subieron los demás.
+
+### Después de trabajar: guardar y subir tus cambios
+
+```
+git status
+git add .
+git commit -m "Describe lo que hiciste"
+git push
+```
+
+### Reglas del grupo
+
+1. **Siempre `git pull` antes de empezar** a trabajar.
+2. **Mensajes de commit claros**, que digan qué hiciste:
+   - ✅ `Agrega vista del menú`
+   - ✅ `Corrige total del carrito`
+   - ❌ `cambios`, `arreglos`, `final`
+3. **Commits pequeños**: guarda y sube cada avance, no todo al final.
+4. **Nunca subas el archivo `.env`** (Git ya lo ignora). Tiene datos privados.
+5. **Avisa en el grupo** qué archivos vas a modificar, para no trabajar dos personas en el mismo archivo a la vez.
+6. Si `git pull` o `git push` muestran un **conflicto**, no borres nada: avisa en el grupo y lo resolvemos juntos.
+
+---
+
+# Avance del proyecto
+
+| Semana | Entrega | Estado |
+|---|---|---|
+| 10 | Primera presentación (informe, presentación y prototipo) | ✅ |
+| 11 | Proyecto base en Laravel y repositorio en GitHub | ✅ |
+| 13 | Segundo avance | Pendiente |
+| 15 | Tercer avance | Pendiente |
+| 16 | Sustentación final | Pendiente |
