@@ -1,4 +1,8 @@
+<x-layout>
+    <x-slot:titulo>Inicio</x-slot>
 
-<h1>{{ $tienda }}</h1>
-<h1>TECH-LUNCH</h1>
-<p>Pide tu almuerzo sin hacer cola.</p>
+    <div class="container py-5">
+        <h1>{{ $tienda }}</h1>
+        <p>Pide tu almuerzo sin hacer cola.</p>
+    </div>
+</x-layout>
