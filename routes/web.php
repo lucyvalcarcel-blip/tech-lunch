@@ -7,5 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
 
 Route::get('/quienes-somos', [InformacionController::class, 'acercaDe'])->name('acerca-de');
+Route::get('/preguntas-frecuentes', [InformacionController::class, 'preguntas'])->name('preguntas');
 
 Route::view('/contacto', 'contacto')->name('contacto');

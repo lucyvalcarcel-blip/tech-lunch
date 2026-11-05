@@ -17,13 +17,13 @@
                     <li><a href="#">Menú</a></li>
                     <li><a href="#">Ofertas</a></li>
                     <li><a href="#">Mis pedidos</a></li>
-                    {{-- CAMBIO 1: nueva línea --}}
+                    <li><a href="{{ route('acerca-de') }}">Quiénes somos</a></li>
+                    <li><a href="{{ route('preguntas') }}">Preguntas frecuentes</a></li>
                     <li><a href="{{ route('contacto') }}">Contacto</a></li>
                 </ul>
             </div>
             <div class="col-6 col-md-4">
                 <h6 class="text-white mb-3">Horario de atención</h6>
-                {{-- CAMBIO 2: la lista de 3 horarios se reemplaza por esta línea --}}
                 <x-info-cafetin compacto />
             </div>
         </div>
