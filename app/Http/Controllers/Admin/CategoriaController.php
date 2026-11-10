@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoriaController extends Controller
 {
@@ -64,7 +65,7 @@ class CategoriaController extends Controller
      */
     public function edit(Categoria $categoria)
     {
-        //
+          return view('admin.categorias.edit', compact('categoria'));
     }
 
     /**
@@ -72,7 +73,18 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, Categoria $categoria)
     {
-        //
+        $datos = $request->validate([
+        'nombre' => ['required', 'string', 'max:50', Rule::unique('categorias', 'nombre')->ignore($categoria->id)],
+        'descripcion' => ['nullable', 'string', 'max:255'],
+        'icono' => ['nullable', 'string', 'max:50'],
+        'estado' => ['required', 'boolean'],
+    ]);
+
+    $categoria->update($datos);
+
+    return redirect()->route('admin.categorias.index')
+        ->with('exito', 'Categoría actualizada correctamente.');
+        
     }
 
     /**
