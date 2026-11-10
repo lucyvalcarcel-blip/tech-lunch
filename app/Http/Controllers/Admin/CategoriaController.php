@@ -13,7 +13,14 @@ class CategoriaController extends Controller
      */
     public function index()
     {
-        //
+    
+     $categorias = Categoria::withCount('productos')
+        ->orderBy('nombre')
+        ->get();
+
+    return view('admin.categorias.index', compact('categorias'));
+
+
     }
 
     /**
