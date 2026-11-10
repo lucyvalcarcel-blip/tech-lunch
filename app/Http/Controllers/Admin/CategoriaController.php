@@ -28,7 +28,9 @@ class CategoriaController extends Controller
      */
     public function create()
     {
-        //
+        $categoria = new Categoria(['estado' => true]);
+
+    return view('admin.categorias.create', compact('categoria'));
     }
 
     /**
@@ -36,7 +38,17 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $datos = $request->validate([
+        'nombre' => ['required', 'string', 'max:50', 'unique:categorias,nombre'],
+        'descripcion' => ['nullable', 'string', 'max:255'],
+        'icono' => ['nullable', 'string', 'max:50'],
+        'estado' => ['required', 'boolean'],
+    ]);
+
+    Categoria::create($datos);
+
+    return redirect()->route('admin.categorias.index')
+        ->with('exito', 'Categoría registrada correctamente.');
     }
 
     /**
