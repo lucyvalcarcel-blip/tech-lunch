@@ -13,14 +13,18 @@
 
 <body>
     @php
-        // Opciones del menú lateral: cada área agrega su ruta cuando la crea
+        $esAdminPersonal = auth()->user()->hasRole(['administrador', 'personal']);
+
         $opciones = [
             ['ruta' => 'admin.pedidos.index', 'icono' => 'bi-receipt', 'texto' => 'Pedidos'],
-            ['ruta' => 'admin.productos.index', 'icono' => 'bi-box-seam', 'texto' => 'Productos'],
-            ['ruta' => 'admin.categorias.index', 'icono' => 'bi-tags', 'texto' => 'Categorías'],
-            ['ruta' => 'admin.ofertas.index', 'icono' => 'bi-percent', 'texto' => 'Ofertas'],
-            ['ruta' => 'admin.puntos.index', 'icono' => 'bi-geo-alt', 'texto' => 'Puntos de entrega'],
         ];
+
+        if ($esAdminPersonal) {
+            $opciones[] = ['ruta' => 'admin.productos.index', 'icono' => 'bi-box-seam', 'texto' => 'Productos'];
+            $opciones[] = ['ruta' => 'admin.categorias.index', 'icono' => 'bi-tags', 'texto' => 'Categorías'];
+            $opciones[] = ['ruta' => 'admin.ofertas.index', 'icono' => 'bi-percent', 'texto' => 'Ofertas'];
+            $opciones[] = ['ruta' => 'admin.puntos.index', 'icono' => 'bi-geo-alt', 'texto' => 'Puntos de entrega'];
+        }
     @endphp
 
     <div class="d-flex">
