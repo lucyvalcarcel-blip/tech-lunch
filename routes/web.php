@@ -2,7 +2,9 @@
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InformacionController;
+use App\Http\Controllers\Admin\ProductoController;
 use Illuminate\Support\Facades\Route;
+
 
 // ===== Sitio público (área 2) =====
 
@@ -21,4 +23,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('categorias', CategoriaController::class)
         ->except(['show', 'destroy']);
 
+    Route::resource('productos', ProductoController::class)
+        ->except(['show', 'destroy']);
 });
