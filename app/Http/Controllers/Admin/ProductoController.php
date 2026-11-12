@@ -25,7 +25,10 @@ class ProductoController extends Controller
      */
     public function create()
     {
-        //
+        $producto = new Producto(['estado' => true, 'destacado' => false, 'stock' => 0]);
+        $categorias = Categoria::orderBy('nombre')->get();
+
+        return view('admin.productos.create', compact('producto', 'categorias'));
     }
 
     /**
@@ -33,7 +36,22 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $datos = $request->validate([
+            'nombre'       => ['required', 'string', 'max:150', 'unique:productos,nombre'],
+            'descripcion'  => ['nullable', 'string', 'max:500'],
+            'precio'       => ['required', 'numeric', 'min:0.10', 'max:9999.99'],
+            'stock'        => ['required', 'integer', 'min:0'],
+            'categoria_id' => ['required', 'exists:categorias,id'],
+            'destacado'    => ['required', 'boolean'],
+            'estado'       => ['required', 'boolean'],
+        ], [], [
+            'categoria_id' => 'categoría',
+        ]);
+
+        Producto::create($datos);
+
+        return redirect()->route('admin.productos.index')
+            ->with('exito', 'Producto registrado correctamente.');
     }
 
     /**
