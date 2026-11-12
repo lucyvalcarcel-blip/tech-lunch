@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 #[Fillable(['nombre', 'descripcion', 'icono', 'estado'])]
 class Categoria extends Model
@@ -31,4 +32,17 @@ class Categoria extends Model
     {
         $consulta->where('estado', true);
     }
+
+    protected function claseImagen(): Attribute
+   {
+       return Attribute::get(fn () => match ($this->nombre) {
+           'Desayunos' => 'img-desayuno',
+           'Almuerzos' => 'img-almuerzo',
+           'Bebidas'   => 'img-bebida',
+           default     => 'img-snack',
+    });
+   }
+
+
+
 }
