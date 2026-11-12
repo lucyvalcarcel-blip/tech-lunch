@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Categoria;
+
 
 class ProductoController extends Controller
 {
@@ -67,7 +69,9 @@ class ProductoController extends Controller
      */
     public function edit(Producto $producto)
     {
-        //
+        $categorias = Categoria::orderBy('nombre')->get();
+
+        return view('admin.productos.edit', compact('producto', 'categorias'));
     }
 
     /**
@@ -75,7 +79,23 @@ class ProductoController extends Controller
      */
     public function update(Request $request, Producto $producto)
     {
-        //
+        $datos = $request->validate([
+            'nombre'       => ['required', 'string', 'max:150',
+                            Rule::unique('productos', 'nombre')->ignore($producto->id)],
+            'descripcion'  => ['nullable', 'string', 'max:500'],
+            'precio'       => ['required', 'numeric', 'min:0.10', 'max:9999.99'],
+            'stock'        => ['required', 'integer', 'min:0'],
+            'categoria_id' => ['required', 'exists:categorias,id'],
+            'destacado'    => ['required', 'boolean'],
+            'estado'       => ['required', 'boolean'],
+        ], [], [
+            'categoria_id' => 'categoría',
+        ]);
+
+        $producto->update($datos);
+
+        return redirect()->route('admin.productos.index')
+            ->with('exito', 'Producto actualizado correctamente.');
     }
 
     /**
