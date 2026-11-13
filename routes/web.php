@@ -17,14 +17,19 @@ Route::get('/preguntas-frecuentes', [InformacionController::class, 'preguntas'])
 Route::view('/contacto', 'contacto')->name('contacto');
 
 Route::view('/perfil', 'perfil')->middleware('auth')->name('perfil');
+
 // ===== Panel del administrador =====
+// Solo usuarios con sesión y rol administrador (auth + spatie role)
+Route::middleware(['auth', 'role:administrador'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-Route::prefix('admin')->name('admin.')->group(function () {
+        // Área 1: CRUD de Categorías (sin show ni destroy)
+        Route::resource('categorias', CategoriaController::class)
+            ->except(['show', 'destroy']);
 
-    // Área 1: CRUD de Categorías (sin show ni destroy)
-    Route::resource('categorias', CategoriaController::class)
-        ->except(['show', 'destroy']);
-
-    Route::resource('productos', ProductoController::class)
-        ->except(['show', 'destroy']);
-});
+        // Área 3: CRUD de Productos (sin show ni destroy)
+        Route::resource('productos', ProductoController::class)
+            ->except(['show', 'destroy']);
+    });
