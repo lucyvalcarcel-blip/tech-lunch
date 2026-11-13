@@ -17,13 +17,13 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('inicio') ? 'active' : '' }}" href="{{ route('inicio') }}">Inicio</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#">Menú</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ofertas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Mis pedidos</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ Route::has('menu') ? route('menu') : '#' }}">Menú</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('inicio') }}#ofertas">Ofertas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ Route::has('pedidos.index') ? route('pedidos.index') : '#' }}">Mis pedidos</a></li>
             </ul>
 
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-                <a href="#" class="btn btn-blanco position-relative" aria-label="Carrito">
+                <a href="{{ Route::has('carrito.index') ? route('carrito.index') : '#' }}" class="btn btn-blanco position-relative" aria-label="Carrito">
                     <i class="bi bi-cart3"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill carrito-contador">0</span>
                 </a>

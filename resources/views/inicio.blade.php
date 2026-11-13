@@ -12,7 +12,7 @@
                     <h1 class="mb-3">Pide tu almuerzo <span>sin hacer cola</span></h1>
                     <p class="lead mb-4">Elige del menú del cafetín, paga con Yape o Plin y recógelo listo, sin hacer cola.</p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a href="#" class="btn btn-tl-amarillo btn-lg"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
+                        <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-lg"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
                         <a href="#como-funciona" class="btn btn-blanco btn-lg">Cómo funciona</a>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                             <p class="text-gris small mb-3">{{ $producto->descripcion }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="precio">S/ {{ number_format($producto->precio, 2) }}</span>
-                                <a href="#" class="btn btn-tl-amarillo btn-sm"><i class="bi bi-plus-lg"></i> Agregar</a>
+                                <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-sm"><i class="bi bi-plus-lg"></i> Agregar</a>
                             </div>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
         <div class="row g-3">
             @foreach ($categorias as $categoria)
                 <div class="col-6 col-md-3">
-                    <a href="#" class="categoria tarjeta tarjeta-hover d-flex align-items-center gap-3 p-3">
+                    <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="categoria tarjeta tarjeta-hover d-flex align-items-center gap-3 p-3">
                         <span class="icono-circulo {{ $categoria->clase_imagen }}"><i class="bi {{ $categoria->icono }}"></i></span>
                         <span>
                             <strong class="d-block">{{ $categoria->nombre }}</strong>
@@ -114,7 +114,7 @@
                 <h2 class="h3 mb-2">¿Tienes clase hasta la 1:00 p. m.?</h2>
                 <p class="mb-md-0">Haz tu pedido antes y recógelo listo apenas salgas.</p>
             </div>
-            <a href="#" class="btn btn-tl btn-lg flex-shrink-0"><i class="bi bi-bag-plus me-2"></i>Hacer mi pedido</a>
+            <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl btn-lg flex-shrink-0"><i class="bi bi-bag-plus me-2"></i>Hacer mi pedido</a>
         </div>
     </section>
 </x-layout>
