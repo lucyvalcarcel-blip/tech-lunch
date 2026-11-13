@@ -25,8 +25,10 @@
                     <span>Operación N.º {{ $pedido->numero_operacion }}</span>
                 </div>
             </div>
-
-            <a href="{{ route('menu') }}" class="btn btn-tl-amarillo mt-4">Volver al menú</a>
+            <div class="d-flex gap-2 justify-content-center mt-4">
+                <a href="{{ route('pedidos.index') }}" class="btn btn-tl-borde">Mis pedidos</a>
+                <a href="{{ route('menu') }}" class="btn btn-tl-amarillo">Volver al menú</a>
+            </div>
         </div>
     </div>
 </x-layout>

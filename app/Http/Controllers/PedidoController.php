@@ -13,9 +13,14 @@ class PedidoController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        //
-    }
+{
+    $pedidos = Pedido::where('user_id', auth()->id())
+        ->withCount('detalles')
+        ->latest()
+        ->get();
+
+    return view('pedidos.index', compact('pedidos'));
+}
 
     /**
      * Show the form for creating a new resource.
