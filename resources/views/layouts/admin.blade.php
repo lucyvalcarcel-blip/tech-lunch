@@ -51,7 +51,12 @@
 
             <div class="mt-auto">
                 <a class="nav-link" href="{{ route('inicio') }}"><i class="bi bi-shop"></i> Ver tienda</a>
-                <a class="nav-link" href="#"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
+                <form method="POST" action="{{ route('logout') }}" class="m-0">
+                    @csrf
+                     <button type="submit" class="nav-link border-0 bg-transparent w-100 text-start">
+                         <i class="bi bi-box-arrow-left"></i> Cerrar sesión
+                     </button>
+                </form>
             </div>
         </aside>
 
