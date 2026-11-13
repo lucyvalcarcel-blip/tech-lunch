@@ -4,7 +4,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InformacionController;
 use App\Http\Controllers\Admin\ProductoController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\MenuController;
 
 // ===== Sitio público (área 2) =====
 
@@ -15,7 +15,7 @@ Route::get('/quienes-somos', [InformacionController::class, 'acercaDe'])->name('
 Route::get('/preguntas-frecuentes', [InformacionController::class, 'preguntas'])->name('preguntas');
 
 Route::view('/contacto', 'contacto')->name('contacto');
-
+Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 Route::view('/perfil', 'perfil')->middleware('auth')->name('perfil');
 
 // ===== Panel del administrador =====

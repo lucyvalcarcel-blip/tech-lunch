@@ -11,16 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
+            $table->string('codigo', 10)->nullable()->unique();
+            $table->foreignId('user_id')->nullable()->constrained('users')->restrictOnDelete();
+            $table->string('celular', 15);
+            $table->string('metodo_pago', 10);
+            $table->string('numero_operacion', 20);
+            $table->decimal('total', 8, 2);
             $table->timestamps();
-        });
-        
+            });    
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('pedidos');
