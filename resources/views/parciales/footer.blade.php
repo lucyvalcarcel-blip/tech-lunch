@@ -9,14 +9,14 @@
                         <small>Astrid Catering · Tecsup Ate</small>
                     </span>
                 </a>
-                <p class="small mb-0 opacity-75">Reserva tu comida, paga en línea y recógela en el cafetín o recíbela en tu aula, sin hacer cola.</p>
+                <p class="small mb-0 opacity-75">Reserva tu comida, paga en línea y recógela en el cafetín, sin hacer cola.</p>
             </div>
             <div class="col-6 col-md-3">
                 <h6 class="text-white mb-3">Navegación</h6>
                 <ul class="list-unstyled small d-grid gap-2 mb-0">
-                    <li><a href="#">Menú</a></li>
-                    <li><a href="#">Ofertas</a></li>
-                    <li><a href="#">Mis pedidos</a></li>
+                    <li><a href="{{ Route::has('menu') ? route('menu') : '#' }}">Menú</a></li>
+                    <li><a href="{{ route('inicio') }}#ofertas">Ofertas</a></li>
+                    <li><a href="{{ Route::has('pedidos.index') ? route('pedidos.index') : '#' }}">Mis pedidos</a></li>
                     <li><a href="{{ route('acerca-de') }}">Quiénes somos</a></li>
                     <li><a href="{{ route('preguntas') }}">Preguntas frecuentes</a></li>
                     <li><a href="{{ route('contacto') }}">Contacto</a></li>

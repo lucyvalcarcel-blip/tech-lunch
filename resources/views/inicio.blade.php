@@ -10,9 +10,9 @@
                 <div class="col-lg-6">
                     <span class="insignia insignia-oferta mb-3"><i class="bi bi-lightning-charge-fill me-1"></i> Nuevo en Tecsup</span>
                     <h1 class="mb-3">Pide tu almuerzo <span>sin hacer cola</span></h1>
-                    <p class="lead mb-4">Elige del menú del cafetín, paga con Yape o Plin y recógelo listo o recíbelo en tu aula.</p>
+                    <p class="lead mb-4">Elige del menú del cafetín, paga con Yape o Plin y recógelo listo, sin hacer cola.</p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a href="#" class="btn btn-tl-amarillo btn-lg"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
+                        <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-lg"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
                         <a href="#como-funciona" class="btn btn-blanco btn-lg">Cómo funciona</a>
                     </div>
                 </div>
@@ -33,8 +33,8 @@
                         <hr>
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <small class="text-gris d-block">Entrega</small>
-                                <strong><i class="bi bi-geo-alt-fill text-azul"></i> Pabellón B · Aula 204</strong>
+                                <small class="text-gris d-block">Recojo</small>
+                                <strong><i class="bi bi-geo-alt-fill text-azul"></i> Cafetín · TL-0001</strong>
                             </div>
                             <span class="precio">S/ 22.00</span>
                         </div>
@@ -63,30 +63,29 @@
     </section>
 
     {{-- OFERTAS DEL DÍA --}}
-    <section id="ofertas" class="container pb-5">
-        <h2 class="seccion-titulo mb-4">Ofertas del día</h2>
+   <section id="ofertas" class="container pb-5">
+        <h2 class="seccion-titulo mb-4">Destacados del día</h2>
         <div class="row g-4">
-            @foreach ($ofertas as $oferta)
-                <div class="col-md-4">
+            @forelse ($destacados as $producto)
+                <div class="col-md-4 col-lg-3">
                     <div class="tarjeta tarjeta-hover h-100">
-                        <div class="producto-img {{ $oferta['clase'] }}">
-                            <span class="insignia insignia-oferta position-absolute top-0 start-0 m-3">{{ $oferta['etiqueta'] }}</span>
-                            <i class="bi {{ $oferta['icono'] }}"></i>
+                        <div class="producto-img {{ $producto->categoria->clase_imagen }}">
+                            <span class="insignia insignia-oferta position-absolute top-0 start-0 m-3">{{ $producto->categoria->nombre }}</span>
+                            <i class="bi {{ $producto->categoria->icono }}"></i>
                         </div>
                         <div class="p-4">
-                            <h3 class="h5 mb-1">{{ $oferta['nombre'] }}</h3>
-                            <p class="text-gris small mb-3">{{ $oferta['descripcion'] }}</p>
+                            <h3 class="h5 mb-1">{{ $producto->nombre }}</h3>
+                            <p class="text-gris small mb-3">{{ $producto->descripcion }}</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="precio">S/ {{ number_format($oferta['precio'], 2) }}</span>
-                                    <span class="precio-antes ms-1">S/ {{ number_format($oferta['precio_antes'], 2) }}</span>
-                                </div>
-                                <a href="#" class="btn btn-tl-amarillo btn-sm"><i class="bi bi-plus-lg"></i> Agregar</a>
+                                <span class="precio">S/ {{ number_format($producto->precio, 2) }}</span>
+                                <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-sm"><i class="bi bi-plus-lg"></i> Agregar</a>
                             </div>
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <p class="text-gris">Por ahora no hay productos destacados.</p>
+            @endforelse
         </div>
     </section>
 
@@ -96,11 +95,11 @@
         <div class="row g-3">
             @foreach ($categorias as $categoria)
                 <div class="col-6 col-md-3">
-                    <a href="#" class="categoria tarjeta tarjeta-hover d-flex align-items-center gap-3 p-3">
-                        <span class="icono-circulo {{ $categoria['clase'] }}"><i class="bi {{ $categoria['icono'] }}"></i></span>
+                    <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="categoria tarjeta tarjeta-hover d-flex align-items-center gap-3 p-3">
+                        <span class="icono-circulo {{ $categoria->clase_imagen }}"><i class="bi {{ $categoria->icono }}"></i></span>
                         <span>
-                            <strong class="d-block">{{ $categoria['nombre'] }}</strong>
-                            <small class="text-gris">{{ $categoria['cantidad'] }} productos</small>
+                            <strong class="d-block">{{ $categoria->nombre }}</strong>
+                            <small class="text-gris">{{ $categoria->productos_count }} productos</small>
                         </span>
                     </a>
                 </div>
@@ -113,9 +112,9 @@
         <div class="satin-amarillo p-4 p-md-5 d-md-flex align-items-center justify-content-between gap-4" style="border-radius:24px">
             <div>
                 <h2 class="h3 mb-2">¿Tienes clase hasta la 1:00 p. m.?</h2>
-                <p class="mb-md-0">Haz tu pedido antes y lo recibes en tu aula apenas salgas.</p>
+                <p class="mb-md-0">Haz tu pedido antes y recógelo listo apenas salgas.</p>
             </div>
-            <a href="#" class="btn btn-tl btn-lg flex-shrink-0"><i class="bi bi-bag-plus me-2"></i>Hacer mi pedido</a>
+            <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl btn-lg flex-shrink-0"><i class="bi bi-bag-plus me-2"></i>Hacer mi pedido</a>
         </div>
     </section>
 </x-layout>

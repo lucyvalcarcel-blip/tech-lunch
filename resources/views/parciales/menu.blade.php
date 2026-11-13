@@ -17,18 +17,44 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('inicio') ? 'active' : '' }}" href="{{ route('inicio') }}">Inicio</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#">Menú</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Ofertas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Mis pedidos</a></li>
+                <li class="nav-item"><a class="nav-link {{ request()->routeIs('menu') ? 'active' : '' }}" href="{{ Route::has('menu') ? route('menu') : '#' }}">Menú</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('inicio') }}#ofertas">Ofertas</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ Route::has('pedidos.index') ? route('pedidos.index') : '#' }}">Mis pedidos</a></li>
             </ul>
+
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-                <a href="#" class="btn btn-blanco position-relative" aria-label="Carrito">
+                <a href="{{ Route::has('carrito.index') ? route('carrito.index') : '#' }}" class="btn btn-blanco position-relative" aria-label="Carrito">
                     <i class="bi bi-cart3"></i>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill carrito-contador">0</span>
                 </a>
-                <a href="#" class="btn btn-tl-amarillo">
-                    <i class="bi bi-person-circle me-1"></i> Iniciar sesión
-                </a>
+
+                {{-- Visitante: sin sesión --}}
+                @guest
+                    <a href="{{ route('login') }}" class="btn btn-tl-amarillo">
+                        <i class="bi bi-person-circle me-1"></i> Iniciar sesión
+                    </a>
+                @endguest
+
+                {{-- Usuario con sesión --}}
+                @auth
+                    {{-- Solo el administrador ve el acceso al panel --}}
+                    @role('administrador')
+                        <a href="{{ route('admin.categorias.index') }}" class="btn btn-blanco">
+                            <i class="bi bi-speedometer2 me-1"></i> Panel
+                        </a>
+                    @endrole
+
+                    <a href="{{ Route::has('perfil') ? route('perfil') : '#' }}" class="btn btn-blanco">
+                        <i class="bi bi-person-circle me-1"></i> {{ auth()->user()->name }}
+                    </a>
+
+                    <form method="POST" action="{{ route('logout') }}" class="m-0">
+                        @csrf
+                        <button type="submit" class="btn btn-tl-amarillo">
+                            <i class="bi bi-box-arrow-right me-1"></i> Salir
+                        </button>
+                    </form>
+                @endauth
             </div>
         </div>
     </div>
