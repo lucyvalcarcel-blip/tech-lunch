@@ -25,7 +25,7 @@
             <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
                 <a href="{{ Route::has('carrito.index') ? route('carrito.index') : '#' }}" class="btn btn-blanco position-relative" aria-label="Carrito">
                     <i class="bi bi-cart3"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill carrito-contador">0</span>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill carrito-contador">{{ array_sum(session('carrito', [])) }}</span>
                 </a>
 
                 {{-- Visitante: sin sesión --}}
