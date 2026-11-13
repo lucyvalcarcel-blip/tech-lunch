@@ -4,7 +4,6 @@
     $datos = [
         ['icono' => 'bi-geo-alt', 'etiqueta' => 'Ubicación', 'valor' => 'Cafetín de Tecsup, sede Ate'],
         ['icono' => 'bi-clock', 'etiqueta' => 'Horario de atención', 'valor' => 'Lunes a viernes, de 7:00 a. m. a 5:00 p. m.'],
-        ['icono' => 'bi-truck', 'etiqueta' => 'Delivery en el campus', 'valor' => 'De 12:00 a 3:00 p. m. (+ S/ 2.00)'],
         ['icono' => 'bi-phone', 'etiqueta' => 'Medios de pago', 'valor' => 'Yape y Plin'],
     ];
 @endphp
