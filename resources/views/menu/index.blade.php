@@ -2,6 +2,12 @@
     <x-slot:titulo>Menú</x-slot>
     <header class="cabecera-pagina satin-azul">
         <div class="container">
+            @if (session('exito'))
+            <div class="alert alert-success">{{ session('exito') }}</div>
+            @endif
+            @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+            @endif
             <h1 class="h2 mb-1">Nuestro menú</h1>
             <p class="mb-0">Elige tus comidas y bebidas. Revisa el stock disponible antes de pedir.</p>
         </div>
@@ -46,9 +52,12 @@
                                         @if ($producto->stock === 0)
                                             <button class="btn btn-light btn-sm" disabled>Sin stock</button>
                                         @else
-                                            <button type="button" class="btn btn-tl-amarillo btn-sm">
-                                                <i class="bi bi-plus-lg"></i> Agregar
-                                            </button>
+                                            <form method="POST" action="{{ route('carrito.store', $producto) }}" class="m-0">
+                                                @csrf
+                                                <button type="submit" class="btn btn-tl-amarillo btn-sm">
+                                                    <i class="bi bi-plus-lg"></i> Agregar
+                                                </button>
+                                            </form>
                                         @endif
                                     </div>
                                 </div>

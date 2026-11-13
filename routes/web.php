@@ -5,10 +5,13 @@ use App\Http\Controllers\InformacionController;
 use App\Http\Controllers\Admin\ProductoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CarritoController;
 
 // ===== Sitio público (área 2) =====
-
-
+Route::get('/carrito', [CarritoController::class, 'index'])->name('carrito.index');
+Route::post('/carrito/{producto}', [CarritoController::class, 'store'])->name('carrito.store');
+Route::patch('/carrito/{producto}', [CarritoController::class, 'update'])->name('carrito.update');
+Route::delete('/carrito/{producto}', [CarritoController::class, 'destroy'])->name('carrito.destroy');
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
 
 Route::get('/quienes-somos', [InformacionController::class, 'acercaDe'])->name('acerca-de');
