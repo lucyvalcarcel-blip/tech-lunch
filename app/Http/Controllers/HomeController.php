@@ -12,7 +12,7 @@ class HomeController extends Controller
         $pasos = [
             ['icono' => 'bi-hand-index-thumb', 'color' => 'satin-azul', 'titulo' => '1. Elige', 'texto' => 'Revisa el menú del día, las bebidas y los snacks, y agrégalos a tu carrito.'],
             ['icono' => 'bi-phone', 'color' => 'satin-amarillo', 'titulo' => '2. Paga', 'texto' => 'Paga con Yape o Plin y registra tu número de operación.'],
-            ['icono' => 'bi-bag-check', 'color' => 'satin-azul', 'titulo' => '3. Recibe', 'texto' => 'Recógelo listo en el cafetín con tu código de pedido..'],
+            ['icono' => 'bi-bag-check', 'color' => 'satin-azul', 'titulo' => '3. Recibe', 'texto' => 'Recibe listo en el cafetín con tu código de pedido.'],
         ];
 
                 // Productos destacados y activos, con su categoría
