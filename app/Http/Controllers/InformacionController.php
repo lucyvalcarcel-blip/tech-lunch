@@ -11,7 +11,7 @@ class InformacionController extends Controller
         $valores = [
             ['icono' => 'bi-lightning-charge', 'titulo' => 'Rapidez', 'texto' => 'Pides desde tu celular y recoges sin hacer cola.'],
             ['icono' => 'bi-phone', 'titulo' => 'Pago fácil', 'texto' => 'Pagas con Yape o Plin y el cafetín valida tu pago.'],
-            ['icono' => 'bi-geo-alt', 'titulo' => 'Llega a tu aula', 'texto' => 'Recibe tu pedido en el punto de entrega que elijas.'],
+            ['icono' => 'bi-geo-alt', 'titulo' => 'Recoge en el cafetín', 'texto' => 'Retira tu pedido listo con tu código de pedido.'],
         ];
 
         $equipo = [
@@ -29,23 +29,23 @@ class InformacionController extends Controller
         $preguntas = [
             [
                 'pregunta' => '¿Cómo hago un pedido?',
-                'respuesta' => 'Entra al Menú, agrega tus productos al carrito y confirma tu pedido. Elige si lo recoges en el cafetín o si quieres delivery, y paga con Yape o Plin.',
+                'respuesta' => 'Entra al Menú, agrega tus productos al carrito y confirma tu pedido. Paga con Yape o Plin y recógelo en el cafetín.',
             ],
             [
                 'pregunta' => '¿Cómo pago mi pedido?',
                 'respuesta' => 'Paga con Yape o Plin y escribe el número de operación al confirmar tu pedido. El personal del cafetín revisa el pago y tu pedido pasa a Confirmado.',
             ],
             [
-                'pregunta' => '¿Hay delivery? ¿Cuánto cuesta?',
-                'respuesta' => 'Sí, de 12:00 a 3:00 p. m., con un costo adicional de S/ 2.00. Eliges el punto de entrega del campus, la hora y tu número de celular.',
+                'pregunta' => '¿Hay delivery?',
+                'respuesta' => 'Todavía no. Por ahora el pedido se recoge en el cafetín con tu código. El delivery estará disponible próximamente.',
             ],
             [
                 'pregunta' => '¿Cómo sé que mi pedido está listo?',
-                'respuesta' => 'Revisa Mis pedidos. Cuando el estado cambie a Listo, verás "Ya puedes recogerlo" si es para recoger, o que tu pedido sale hacia tu punto de entrega si es delivery.',
+                'respuesta' => 'Revisa Mis pedidos. Cuando el estado cambie a Listo, ya puedes recogerlo en el cafetín con tu código de pedido.',
             ],
             [
                 'pregunta' => '¿Para qué sirve el código de pedido?',
-                'respuesta' => 'Cada pedido tiene un código, por ejemplo TL-0001. Muéstralo al recoger tu pedido o al recibirlo en tu punto de entrega.',
+                'respuesta' => 'Cada pedido tiene un código, por ejemplo TL-0001. Muéstralo en el cafetín al recoger tu pedido.',
             ],
             [
                 'pregunta' => '¿Qué pasa si mi pago es rechazado?',

@@ -22,8 +22,8 @@
                         hacer su pedido y pagarlo con Yape o Plin, sin hacer cola.
                     </p>
                     <p class="mb-0">
-                        Puedes recoger tu pedido en el cafetín o pedir que te lo lleven
-                        a un punto de entrega del campus.
+                        Después de confirmar tu pedido, lo recoges listo en el cafetín
+                        con tu código de pedido.
                     </p>
                 </div>
                 <div class="col-lg-5">

@@ -16,13 +16,12 @@
             <div class="col-lg-6">
                 <div class="tarjeta p-4 h-100">
                     <h2 class="h5 mb-3">¿Cómo te atendemos?</h2>
-                    <p class="text-gris">Haz tu pedido desde la web y elige si lo recoges en el cafetín o si te lo llevamos a tu pabellón y aula.</p>
+                    <p class="text-gris">Haz tu pedido desde la web y recógelo listo en el cafetín con tu código de pedido.</p>
                     <ul class="text-gris mb-4">
                         <li>Para dudas sobre un pedido, acércate al cafetín con tu <strong>código de pedido</strong>.</li>
-                        <li>Si elegiste delivery, el personal te llamará al <strong>celular</strong> que registraste.</li>
                         <li>Revisa siempre el estado en <strong>Mis pedidos</strong>.</li>
                     </ul>
-                    <a href="#" class="btn btn-tl-amarillo"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
+                    <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
                 </div>
             </div>
         </div>
