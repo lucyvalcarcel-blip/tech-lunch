@@ -19,7 +19,7 @@
             ['ruta' => 'admin.productos.index', 'icono' => 'bi-box-seam', 'texto' => 'Productos'],
             ['ruta' => 'admin.categorias.index', 'icono' => 'bi-tags', 'texto' => 'Categorías'],
             ['ruta' => 'admin.ofertas.index', 'icono' => 'bi-percent', 'texto' => 'Ofertas'],
-            ['ruta' => 'admin.puntos.index', 'icono' => 'bi-geo-alt', 'texto' => 'Puntos de entrega'],
+            ['ruta' => 'admin.cupones.index', 'icono' => 'bi-ticket-perforated', 'texto' => 'Cupones'],
         ];
     @endphp
 
