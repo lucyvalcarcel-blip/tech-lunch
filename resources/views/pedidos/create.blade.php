@@ -68,9 +68,6 @@
                                 <input type="text" id="referencia" name="referencia" maxlength="100" value="{{ old('referencia') }}"
                                        placeholder="Ej.: Segundo piso, al lado del laboratorio" class="form-control">
                             </div>
-                        </div>
-
-                        <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="hora" class="form-label">Hora</label>
                                 <select id="hora" name="hora" class="form-select @error('hora') is-invalid @enderror">
@@ -82,7 +79,10 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-6 d-flex align-items-end">
+                        </div>
+                        <div class="row g-3">
+                           
+                            <div class="col-12">
                                 <div class="alert alert-info small mb-0 w-100 py-2" style="border-radius:12px">
                                     <i class="bi bi-alarm me-1"></i><span id="mensajeLimite"></span>
                                 </div>
@@ -171,6 +171,7 @@
         const subtotal = {{ $total }};
         const costoDelivery = {{ \App\Models\Pedido::COSTO_DELIVERY }};
         const minutosLimite = {{ \App\Models\Pedido::MINUTOS_LIMITE }};
+        const horaCierre = '{{ \App\Models\Pedido::HORA_CIERRE }}';
 
         function actualizarEntrega() {
             const esDelivery = document.querySelector('input[name="tipo_entrega"]:checked').value === 'delivery';
@@ -179,17 +180,26 @@
             document.getElementById('filaDelivery').style.setProperty('display', esDelivery ? 'flex' : 'none', 'important');
             document.getElementById('totalPagar').innerText = 'S/ ' + (subtotal + (esDelivery ? costoDelivery : 0)).toFixed(2);
 
-            // Hora elegida + 10 minutos
+                       if (!esDelivery) {
+                document.getElementById('mensajeLimite').innerHTML =
+                    'Recógelo en el cafetín hasta las <strong>' + aTexto(horaCierre) + '</strong> (hora de cierre).';
+                return;
+            }
+
+            // Delivery: hora elegida + 10 minutos
             let [h, m] = document.getElementById('hora').value.split(':').map(Number);
             m += minutosLimite;
             if (m >= 60) { m -= 60; h += 1; }
-            const limite = (h > 12 ? h - 12 : h) + ':' + String(m).padStart(2, '0') + ' p. m.';
 
             document.getElementById('mensajeLimite').innerHTML =
-                (esDelivery ? 'Te esperamos en tu aula hasta las ' : 'Recógelo en el cafetín hasta las ')
-                + '<strong>' + limite + '</strong> (' + minutosLimite + ' min después de la hora).';
+                'Te esperamos en tu aula hasta las <strong>' + aTexto(h + ':' + m) + '</strong> (' + minutosLimite + ' min después de la hora).';
         }
 
+        // '17:00' -> '5:00 p. m.'
+        function aTexto(hora) {
+            let [h, m] = hora.split(':').map(Number);
+            return (h > 12 ? h - 12 : h) + ':' + String(m).padStart(2, '0') + ' p. m.';
+        }
         document.querySelectorAll('input[name="tipo_entrega"]').forEach(radio => radio.addEventListener('change', actualizarEntrega));
         document.getElementById('hora').addEventListener('change', actualizarEntrega);
         actualizarEntrega();
