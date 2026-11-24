@@ -1,11 +1,12 @@
 <?php
-
+// lucy - paso 4 - ya habia creado el controlador para esta tabla, ahora estoy agregando los campos de entrega y pago a la tabla de pedidos.
 namespace App\Http\Controllers;
 
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
+use App\Models\Zona;
 
 class PedidoController extends Controller
 {
@@ -36,7 +37,7 @@ class PedidoController extends Controller
     $productos = Producto::whereIn('id', array_keys($carrito))->get();
     $total = $productos->sum(fn ($producto) => $producto->precio * $carrito[$producto->id]);
 
-    return view('pedidos.create', compact('productos', 'carrito', 'total'));
+    return view('pedidos.create', compact('productos', 'carrito', 'total', 'zonas'));
 }
 
     /**

@@ -13,6 +13,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Pedido extends Model
 {
+
+
+    // Reglas del delivery (un solo lugar para cambiarlas)
+    public const COSTO_DELIVERY = 2.00;
+    public const MINUTOS_LIMITE = 10;
+    public const HORAS = [
+        '12:00' => '12:00 p. m.',
+        '12:30' => '12:30 p. m.',
+        '13:00' => '1:00 p. m.',
+        '13:30' => '1:30 p. m.',
+        '14:00' => '2:00 p. m.',
+        '14:30' => '2:30 p. m.',
+    ];
+    
     protected function casts(): array
     {
         return ['total' => 'decimal:2',
