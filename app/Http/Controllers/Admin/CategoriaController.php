@@ -92,6 +92,9 @@ class CategoriaController extends Controller
      */
     public function destroy(Categoria $categoria)
     {
-        //
+         $categoria->update(['estado' => false]);
+
+    return redirect()->route('admin.categorias.index')
+        ->with('exito', 'Categoría desactivada correctamente.');
     }
 }

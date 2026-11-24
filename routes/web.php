@@ -45,7 +45,7 @@ Route::middleware(['auth', 'role:administrador'])
 
         // CRUD de Categorías (Lucy)
         Route::resource('categorias', CategoriaController::class)
-            ->except(['show', 'destroy']);
+            ->except(['show']);
 
         // CRUD de Productos (Fabrizio)
         Route::resource('productos', ProductoController::class)

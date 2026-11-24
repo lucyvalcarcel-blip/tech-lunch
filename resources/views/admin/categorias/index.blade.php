@@ -5,7 +5,6 @@
 
 @section('contenido')
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <small class="text-gris">{{ $categorias->count() }} categorías</small>
         <a href="{{ route('admin.categorias.create') }}" class="btn btn-tl-amarillo">
             <i class="bi bi-plus-circle me-1"></i> Nueva categoría
         </a>
@@ -47,7 +46,18 @@
                                 <a href="{{ route('admin.categorias.edit', $categoria) }}"
                                    class="btn btn-warning btn-icono" aria-label="Editar">
                                     <i class="bi bi-pencil-square"></i>
-                                </a>
+                                  {{-- Con esto puse el boton amarillo -- lucy --}}
+                                </a> 
+                                  @if ($categoria->estado)
+                                    <form action="{{ route('admin.categorias.destroy', $categoria) }}" method="POST" class="d-inline"
+                                          onsubmit="return confirm('¿Desactivar esta categoría? Dejará de mostrarse en la tienda.')">
+                                          @csrf
+                                          @method('DELETE')
+                                          <button type="submit" class="btn btn-outline-danger btn-icono" title="Desactivar" aria-label="Desactivar">
+                                          <i class="bi bi-slash-circle"></i>
+                                       </button>
+                                    </form>
+                                  @endif
                             </td>
                         </tr>
                     @empty
