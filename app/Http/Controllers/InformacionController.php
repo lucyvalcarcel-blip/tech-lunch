@@ -10,8 +10,8 @@ class InformacionController extends Controller
     {
         $valores = [
             ['icono' => 'bi-lightning-charge', 'titulo' => 'Rapidez', 'texto' => 'Pides desde tu celular y recoges sin hacer cola.'],
-            ['icono' => 'bi-phone', 'titulo' => 'Pago fácil', 'texto' => 'Pagas con Yape o Plin y el cafetín valida tu pago.'],
-            ['icono' => 'bi-geo-alt', 'titulo' => 'Recoge en el cafetín', 'texto' => 'Retira tu pedido listo con tu código de pedido.'],
+            ['icono' => 'bi-phone', 'titulo' => 'Pago fácil', 'texto' => 'Pagas con Yape, Plin o tarjeta y el cafetín valida tu pago.'],
+            ['icono' => 'bi-geo-alt', 'titulo' => 'Recojo o delivery', 'texto' => 'Recoge tu pedido en el cafetín o recíbelo en tu aula.'],
         ];
 
         $equipo = [
@@ -33,11 +33,11 @@ class InformacionController extends Controller
             ],
             [
                 'pregunta' => '¿Cómo pago mi pedido?',
-                'respuesta' => 'Paga con Yape o Plin y escribe el número de operación al confirmar tu pedido. El personal del cafetín revisa el pago y tu pedido pasa a Confirmado.',
+                'respuesta' => 'Con Yape o Plin escribe el número de operación; con tarjeta de débito o crédito, sus datos. El personal del cafetín revisa el pago y tu pedido pasa a Confirmado.',
             ],
             [
                 'pregunta' => '¿Hay delivery?',
-                'respuesta' => 'Todavía no. Por ahora el pedido se recoge en el cafetín con tu código. El delivery estará disponible próximamente.',
+                'respuesta' => 'Sí, dentro del campus de 12:00 a 3:00 p. m., por S/ 2.00. Elige tu zona, tu aula y la hora; te esperamos hasta 10 minutos después.',
             ],
             [
                 'pregunta' => '¿Cómo sé que mi pedido está listo?',

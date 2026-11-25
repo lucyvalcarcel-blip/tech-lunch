@@ -13,7 +13,7 @@
                             </p>
                             <div class="d-flex gap-4 small" style="opacity:.9">
                                 <span><i class="bi bi-lightning-charge me-1"></i> Rápido</span>
-                                <span><i class="bi bi-phone me-1"></i> Yape y Plin</span>
+                                <span><i class="bi bi-phone me-1"></i> Yape, Plin y tarjeta</span>
                                 <span><i class="bi bi-cup-hot me-1"></i> Sin colas</span>
                             </div>
                         </div>

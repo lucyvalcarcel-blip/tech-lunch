@@ -19,11 +19,11 @@
                     <p>
                         {{ $tienda }} es la página web del cafetín <strong>Astrid Catering</strong>.
                         Con ella, estudiantes, docentes y personal de Tecsup pueden ver el menú,
-                        hacer su pedido y pagarlo con Yape o Plin, sin hacer cola.
+                        hacer su pedido y pagarlo con Yape, Plin o tarjeta, sin hacer cola.
                     </p>
                     <p class="mb-0">
-                        Después de confirmar tu pedido, lo recoges listo en el cafetín
-                        con tu código de pedido.
+                       Después de confirmar tu pedido, lo recoges en el cafetín o te lo
+                       llevamos a tu aula, con tu código de pedido.
                     </p>
                 </div>
                 <div class="col-lg-5">

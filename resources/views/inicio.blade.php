@@ -10,7 +10,7 @@
                 <div class="col-lg-6">
                     <span class="insignia insignia-oferta mb-3"><i class="bi bi-lightning-charge-fill me-1"></i> Nuevo en Tecsup</span>
                     <h1 class="mb-3">Pide tu almuerzo <span>sin hacer cola</span></h1>
-                    <p class="lead mb-4">Elige del menú del cafetín, paga con Yape o Plin y recógelo listo, sin hacer cola.</p>
+                    <p class="lead mb-4">Elige del menú del cafetín, paga con Yape, Plin o tarjeta, y recógelo o recíbelo en tu aula, sin hacer cola.</p>
                     <div class="d-flex flex-wrap gap-3">
                         <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-lg"><i class="bi bi-journal-text me-2"></i>Ver menú</a>
                         <a href="#como-funciona" class="btn btn-blanco btn-lg">Cómo funciona</a>
