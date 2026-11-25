@@ -38,7 +38,29 @@ class OfertaController extends Controller
 
         return redirect()->route('admin.ofertas.index')
             ->with('exito', 'Oferta creada correctamente.');
+        
+        
     }
+    
+    // Muestra el formulario con los datos de la oferta
+    public function edit(Oferta $oferta)
+    {
+        $productos = Producto::orderBy('nombre')->get();
+
+        return view('admin.ofertas.edit', compact('oferta', 'productos'));
+    }
+
+    // Guarda los cambios
+    public function update(Request $request, Oferta $oferta)
+    {
+        $datos = $this->validar($request);     // las MISMAS reglas que al crear
+
+        $oferta->update($datos);
+
+        return redirect()->route('admin.ofertas.index')
+            ->with('exito', 'Oferta actualizada correctamente.');
+    }
+
 
     // Reglas de validación: las usan store() y update() (Paso 5)
     private function validar(Request $request): array
