@@ -43,6 +43,12 @@ class Producto extends Model
         return $this->hasOne(Oferta::class)->vigentes()->latest('fecha_inicio');
     }
 
+    // Precio que se cobra HOY: el de oferta si tiene una vigente, si no el normal
+    public function precioFinal(): float
+    {
+        return (float) ($this->ofertaVigente?->precio_oferta ?? $this->precio);
+    }
+
     // Producto::activos() -> solo los productos con estado = 1
     #[Scope]
     protected function activos(Builder $consulta): void
