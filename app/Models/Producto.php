@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['nombre', 'descripcion', 'precio', 'stock', 'imagen', 'destacado', 'estado', 'categoria_id'])]
 class Producto extends Model
@@ -26,6 +28,19 @@ class Producto extends Model
     public function categoria(): BelongsTo
     {
         return $this->belongsTo(Categoria::class);
+
+    }
+    
+    // Un producto puede tener muchas ofertas (vigentes, vencidas o programadas)
+    public function ofertas(): HasMany
+    {
+        return $this->hasMany(Oferta::class);
+    }
+
+    // Solo la oferta de HOY (activa y dentro de sus fechas), o null si no tiene
+    public function ofertaVigente(): HasOne
+    {
+        return $this->hasOne(Oferta::class)->vigentes()->latest('fecha_inicio');
     }
 
     // Producto::activos() -> solo los productos con estado = 1
