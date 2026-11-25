@@ -1,3 +1,8 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-icons/font/bootstrap-icons.min.css';
 @import './tech-lunch.css';
+
+/* Que la barra fija no tape el título al saltar a una sección (#ofertas, #como-funciona) */
+section[id] {
+    scroll-margin-top: 90px;
+}
