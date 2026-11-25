@@ -41,4 +41,19 @@ class Oferta extends Model
             ->whereDate('fecha_inicio', '<=', today())
             ->whereDate('fecha_fin', '>=', today());
     }
+
+    // Texto del estado para mostrar en el listado del admin
+    public function situacion(): string
+    {
+        if (! $this->estado) {
+            return 'Inactiva';
+        }
+        if ($this->fecha_inicio->isFuture()) {
+            return 'Programada';
+        }
+        if ($this->fecha_fin->lt(today())) {
+            return 'Vencida';
+        }
+        return 'Vigente';
+    }
 }

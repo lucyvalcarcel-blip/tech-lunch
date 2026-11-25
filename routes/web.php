@@ -8,6 +8,8 @@ use App\Http\Controllers\InformacionController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\Admin\OfertaController;
+
 
 // Panel del administrador
 use App\Http\Controllers\Admin\CategoriaController;
@@ -50,4 +52,6 @@ Route::middleware(['auth', 'role:administrador'])
         // CRUD de Productos (Fabrizio)
         Route::resource('productos', ProductoController::class)
             ->except(['show', 'destroy']);
+        // CRUD de Ofertas (Ingrid)
+        Route::resource('ofertas', OfertaController::class)->except(['show']);
     });
