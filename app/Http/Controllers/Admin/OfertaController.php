@@ -62,6 +62,16 @@ class OfertaController extends Controller
     }
 
 
+    // Eliminación LÓGICA: no se borra, solo se desactiva
+    public function destroy(Oferta $oferta)
+    {
+        $oferta->update(['estado' => false]);
+
+        return redirect()->route('admin.ofertas.index')
+            ->with('exito', 'Oferta desactivada correctamente.');
+    }
+
+
     // Reglas de validación: las usan store() y update() (Paso 5)
     private function validar(Request $request): array
     {
