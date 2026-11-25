@@ -62,8 +62,39 @@
         </div>
     </section>
 
-    {{-- OFERTAS DEL DÍA --}}
-   <section id="ofertas" class="container pb-5">
+    {{-- OFERTAS DE HOY (Ingrid): solo aparece si hay ofertas vigentes --}}
+    @if ($ofertas->isNotEmpty())
+        <section id="ofertas" class="container pb-5">
+            <h2 class="seccion-titulo mb-4">Ofertas de hoy</h2>
+            <div class="row g-4">
+                @foreach ($ofertas as $oferta)
+                    <div class="col-md-4 col-lg-3">
+                        <div class="tarjeta tarjeta-hover h-100">
+                            <div class="producto-img {{ $oferta->producto->categoria->clase_imagen }}">
+                                {{-- Insignia con el tipo: Descuento, Oferta del día o Combo --}}
+                                <span class="insignia insignia-oferta position-absolute top-0 start-0 m-3">{{ $oferta->tipo }}</span>
+                                <i class="bi {{ $oferta->producto->categoria->icono }}"></i>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="h5 mb-1">{{ $oferta->producto->nombre }}</h3>
+                                <p class="text-gris small mb-3">Hasta el {{ $oferta->fecha_fin->format('d/m') }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="precio">
+                                        <del class="text-muted small">S/ {{ number_format($oferta->producto->precio, 2) }}</del>
+                                        S/ {{ number_format($oferta->precio_oferta, 2) }}
+                                    </span>
+                                    <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-sm"><i class="bi bi-plus-lg"></i> Agregar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    {{-- DESTACADOS DEL DÍA --}}
+    <section id="destacados" class="container pb-5">
         <h2 class="seccion-titulo mb-4">Destacados del día</h2>
         <div class="row g-4">
             @forelse ($destacados as $producto)
@@ -77,7 +108,8 @@
                             <h3 class="h5 mb-1">{{ $producto->nombre }}</h3>
                             <p class="text-gris small mb-3">{{ $producto->descripcion }}</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="precio">S/ {{ number_format($producto->precio, 2) }}</span>
+                                {{-- (Ingrid) Precio con el parcial: tachado si tiene oferta hoy --}}
+                                <span class="precio">@include('parciales.precio', ['producto' => $producto])</span>
                                 <a href="{{ Route::has('menu') ? route('menu') : '#' }}" class="btn btn-tl-amarillo btn-sm"><i class="bi bi-plus-lg"></i> Agregar</a>
                             </div>
                         </div>

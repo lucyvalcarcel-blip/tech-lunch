@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Categoria;
+use App\Models\Oferta;      // (Ingrid)
 use App\Models\Producto;
 use Illuminate\View\View;
 
@@ -15,8 +17,15 @@ class HomeController extends Controller
             ['icono' => 'bi-bag-check', 'color' => 'satin-azul', 'titulo' => '3. Recibe', 'texto' => 'Recógelo en el cafetín o recibelo en tu aula con tu código de pedido.'],
         ];
 
-                // Productos destacados y activos, con su categoría
-        $destacados = Producto::with('categoria')
+        // Ofertas vigentes HOY, de productos activos (Ingrid)
+        $ofertas = Oferta::vigentes()
+            ->whereHas('producto', fn ($consulta) => $consulta->activos())
+            ->with('producto.categoria')       // producto y su categoría, sin N+1
+            ->orderBy('fecha_fin')             // las que terminan antes, primero
+            ->get();
+
+        // Productos destacados y activos, con su categoría y su oferta de hoy
+        $destacados = Producto::with(['categoria', 'ofertaVigente'])   // (Ingrid) + ofertaVigente
             ->activos()
             ->destacados()
             ->orderBy('nombre')
@@ -28,7 +37,6 @@ class HomeController extends Controller
             ->orderBy('nombre')
             ->get();
 
-        return view('inicio', compact('pasos', 'destacados', 'categorias'));
-
+        return view('inicio', compact('pasos', 'ofertas', 'destacados', 'categorias'));
     }
 }
