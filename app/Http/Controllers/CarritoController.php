@@ -24,12 +24,12 @@ public function store(Producto $producto)
 public function index()
 {
     $carrito = session('carrito', []);
-    $productos = Producto::with('categoria')->whereIn('id', array_keys($carrito))->get();
+    $productos = Producto::with('categoria', 'ofertaVigente')->whereIn('id', array_keys($carrito))->get();
 
     $items = $productos->map(fn ($producto) => [
         'producto' => $producto,
         'cantidad' => $carrito[$producto->id],
-        'subtotal' => $producto->precio * $carrito[$producto->id],
+        'subtotal' => $producto->precioFinal() * $carrito[$producto->id],
     ]);
 
     $total = $items->sum('subtotal');
