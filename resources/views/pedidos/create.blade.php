@@ -253,7 +253,7 @@
                         @foreach ($productos as $producto)
                             <div class="d-flex justify-content-between small mb-2">
                                 <span>{{ $carrito[$producto->id] }} × {{ $producto->nombre }}</span>
-                                <span>S/ {{ number_format($producto->precio * $carrito[$producto->id], 2) }}</span>
+                                <span>S/ {{ number_format($producto->precioFinal() * $carrito[$producto->id], 2) }}</span>
                             </div>
                         @endforeach
                         <hr>

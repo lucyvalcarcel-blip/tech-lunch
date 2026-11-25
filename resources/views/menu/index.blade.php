@@ -47,7 +47,8 @@
                                     <p class="text-gris small mb-3">{{ $producto->descripcion }}</p>
 
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="precio">S/ {{ $producto->precio }}</span>
+                                        {{-- (Ingrid) Precio con el parcial: tachado si tiene oferta hoy --}}
+                                        <span class="precio">@include('parciales.precio', ['producto' => $producto])</span>
 
                                         @if ($producto->stock === 0)
                                             <button class="btn btn-light btn-sm" disabled>Sin stock</button>

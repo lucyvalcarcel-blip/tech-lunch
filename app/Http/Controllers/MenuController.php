@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Categoria;
+
 class MenuController extends Controller
 {
     public function index()
-{
-    $categorias = Categoria::activas()
-        ->with(['productos' => fn ($consulta) => $consulta->activos()->orderBy('nombre')])
-        ->orderBy('nombre')
-        ->get();
+    {
+        // Categorías activas con sus productos activos.
+        // (Ingrid) Cada producto trae su oferta de hoy, para mostrar el precio tachado
+        $categorias = Categoria::activas()
+            ->with(['productos' => fn ($consulta) => $consulta->activos()
+                ->with('ofertaVigente')
+                ->orderBy('nombre')])
+            ->orderBy('nombre')
+            ->get();
 
-    return view('menu.index', compact('categorias'));
-}
+        return view('menu.index', compact('categorias'));
+    }
 }

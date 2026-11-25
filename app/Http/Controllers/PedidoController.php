@@ -1,7 +1,6 @@
 <?php
-// lucy - paso 4 - ya habia creado el controlador para esta tabla, ahora estoy agregando los campos de entrega y pago a la tabla de pedidos.
-namespace App\Http\Controllers;
 
+namespace App\Http\Controllers;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 use App\Models\Producto;
@@ -10,9 +9,7 @@ use App\Models\Zona;
 use Illuminate\Validation\Rule;
 class PedidoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
 {
     $pedidos = Pedido::where('user_id', auth()->id())
@@ -23,9 +20,7 @@ class PedidoController extends Controller
     return view('pedidos.index', compact('pedidos'));
 }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
     $carrito = session('carrito', []);
@@ -34,8 +29,9 @@ class PedidoController extends Controller
         return redirect()->route('menu')->with('error', 'Tu carrito está vacío.');
     }
 
-    $productos = Producto::whereIn('id', array_keys($carrito))->get();
-    $total = $productos->sum(fn ($producto) => $producto->precio * $carrito[$producto->id]);
+    // (Ingrid) Se carga la oferta de hoy de cada producto y se usa precioFinal()
+    $productos = Producto::with('ofertaVigente')->whereIn('id', array_keys($carrito))->get();
+    $total = $productos->sum(fn ($producto) => $producto->precioFinal() * $carrito[$producto->id]);
 
     $zonas = Zona::activas()->orderBy('nombre')->get();
 
@@ -99,7 +95,8 @@ class PedidoController extends Controller
         return redirect()->route('menu');
     }
 
-    $productos = Producto::whereIn('id', array_keys($carrito))->get();
+    // (Ingrid) Se carga la oferta de hoy de cada producto
+    $productos = Producto::with('ofertaVigente')->whereIn('id', array_keys($carrito))->get();
 
     foreach ($productos as $producto) {
         if ($carrito[$producto->id] > $producto->stock) {
@@ -148,7 +145,8 @@ class PedidoController extends Controller
 
 
 
-    $total = $productos->sum(fn ($p) => $p->precio * $carrito[$p->id]) + $costoDelivery; // NUEVO: + delivery
+    // (Ingrid) El total usa precioFinal(): precio de oferta si tiene una vigente
+    $total = $productos->sum(fn ($p) => $p->precioFinal() * $carrito[$p->id]) + $costoDelivery; // NUEVO: + delivery
 
     $pedido = DB::transaction(function () use ($datos, $productos, $carrito, $total, $horaEntrega, $limite, $costoDelivery) {
         $pedido = Pedido::create($datos + [
@@ -166,8 +164,8 @@ class PedidoController extends Controller
             $pedido->detalles()->create([
                 'producto_id'     => $producto->id,
                 'cantidad'        => $cantidad,
-                'precio_unitario' => $producto->precio,
-                'subtotal'        => $producto->precio * $cantidad,
+                'precio_unitario' => $producto->precioFinal(),               // (Ingrid) precio pagado
+                'subtotal'        => $producto->precioFinal() * $cantidad,   // (Ingrid)
             ]);
             $producto->decrement('stock', $cantidad);
         }
