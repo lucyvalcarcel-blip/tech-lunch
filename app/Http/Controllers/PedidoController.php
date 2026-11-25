@@ -50,21 +50,49 @@ class PedidoController extends Controller
 {
     $datos = $request->validate([
         // NUEVO: entrega
-        'tipo_entrega'     => 'required|in:recojo,delivery',
-        'zona_id'          => ['required_if:tipo_entrega,delivery', 'nullable',
-                               Rule::exists('zonas', 'id')->where('estado', true)],
-        'aula'             => 'required_if:tipo_entrega,delivery|nullable|string|max:50',
-        'referencia'       => 'nullable|string|max:100',
-        'hora'             => ['required_if:tipo_entrega,delivery', 'nullable',
-                               Rule::in(array_keys(Pedido::HORAS))],
-        // Pago (lo mejoramos en el Paso 7)
-        'celular'          => 'required|digits:9',
-        'metodo_pago'      => 'required|in:yape,plin',
-        'numero_operacion' => 'required|string|max:20',
-    ], [], [
-        'zona_id' => 'zona',
-        'hora'    => 'hora de entrega',
-    ]);
+                
+            'tipo_entrega'     => 'required|in:recojo,delivery',
+            'zona_id'          => ['required_if:tipo_entrega,delivery', 'nullable',
+                                   Rule::exists('zonas', 'id')->where('estado', true)],
+            'aula'             => 'required_if:tipo_entrega,delivery|nullable|string|max:50',
+            'referencia'       => 'nullable|string|max:100',
+            'hora'             => ['required_if:tipo_entrega,delivery', 'nullable',
+                                   Rule::in(array_keys(Pedido::HORAS))],
+            // Pago
+            'celular'          => 'required|digits:9',
+            'metodo_pago'      => 'required|in:yape,plin,debito,credito',
+            // Yape o Plin
+            'numero_operacion' => 'required_if:metodo_pago,yape,plin|nullable|string|max:20',
+            // Tarjeta
+            'titular'          => 'required_if:metodo_pago,debito,credito|nullable|string|max:60',
+            'numero_tarjeta'   => ['required_if:metodo_pago,debito,credito', 'nullable',
+                function ($atributo, $valor, $fallar) {
+                    $digitos = preg_replace('/\D/', '', $valor);
+                    if (! str_starts_with($digitos, '4') && ! str_starts_with($digitos, '5')) {
+                        $fallar('Solo aceptamos tarjetas Visa o Mastercard.');
+                    } elseif (! $this->luhnValido($valor)) {
+                        $fallar('El número de tarjeta no es válido.');
+                    }
+                }],
+            'vencimiento'      => ['required_if:metodo_pago,debito,credito', 'nullable',
+                'regex:/^(0[1-9]|1[0-2])\/\d{2}$/',
+                function ($atributo, $valor, $fallar) {
+                    if (preg_match('/^(0[1-9]|1[0-2])\/\d{2}$/', $valor)
+                        && \Carbon\Carbon::createFromFormat('m/y', $valor)->endOfMonth()->isPast()) {
+                        $fallar('La tarjeta está vencida.');
+                    }
+                }],
+            'cvv'              => 'required_if:metodo_pago,debito,credito|nullable|digits:3',
+            'cuotas'           => 'required_if:metodo_pago,credito|nullable|integer|in:1,3,6',
+        ], [], [
+            'zona_id'          => 'zona',
+            'hora'             => 'hora de entrega',
+            'metodo_pago'      => 'método de pago',
+            'numero_operacion' => 'número de operación',
+            'numero_tarjeta'   => 'número de tarjeta',
+            'cvv'              => 'CVV',
+        ]);
+
 
     $carrito = session('carrito', []);
     if (empty($carrito)) {
@@ -93,6 +121,32 @@ class PedidoController extends Controller
         $datos['referencia'] = null;
     }
     unset($datos['hora']); // "hora" no es una columna: se guarda como hora_entrega
+
+//    preparar los datos de pago 
+    // NUEVO: datos del pago
+    if (in_array($datos['metodo_pago'], ['debito', 'credito'])) {
+        $digitos = preg_replace('/\D/', '', $datos['numero_tarjeta']);
+
+        // Simulación: esta tarjeta de prueba siempre es rechazada por el "banco"
+        if ($digitos === '4000000000000002') {
+            return back()->withInput($request->except('numero_tarjeta', 'cvv'))
+                ->with('error', 'El banco rechazó la tarjeta (simulación). Prueba con otra.');
+        }
+
+        $datos['tarjeta_marca']    = str_starts_with($digitos, '4') ? 'VISA' : 'MASTERCARD';
+        $datos['tarjeta_ultimos4'] = substr($digitos, -4);
+        $datos['numero_operacion'] = null;
+        if ($datos['metodo_pago'] === 'debito') {
+            $datos['cuotas'] = null;
+        }
+    } else {
+        $datos['cuotas'] = null;
+    }
+
+    // Por seguridad, el número completo, el CVV, el titular y el vencimiento NO se guardan
+    unset($datos['numero_tarjeta'], $datos['cvv'], $datos['titular'], $datos['vencimiento']);
+
+
 
     $total = $productos->sum(fn ($p) => $p->precio * $carrito[$p->id]) + $costoDelivery; // NUEVO: + delivery
 
@@ -126,6 +180,32 @@ class PedidoController extends Controller
     return redirect()->route('pedidos.show', $pedido)
         ->with('exito', 'Pedido ' . $pedido->codigo . ' registrado.');
 }
+
+
+    // Algoritmo de Luhn: valida que el número de tarjeta sea matemáticamente posible
+    private function luhnValido(string $numero): bool
+    {
+        $digitos = preg_replace('/\D/', '', $numero);
+
+        if (strlen($digitos) !== 16) {
+            return false;
+        }
+
+        $suma = 0;
+        foreach (str_split(strrev($digitos)) as $posicion => $digito) {
+            $digito = (int) $digito;
+            if ($posicion % 2 === 1) {
+                $digito *= 2;
+                if ($digito > 9) {
+                    $digito -= 9;
+                }
+            }
+            $suma += $digito;
+        }
+
+        return $suma % 10 === 0;
+    }
+
 
 
 
