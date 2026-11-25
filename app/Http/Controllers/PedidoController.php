@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use App\Models\Zona;
-
+use Illuminate\Validation\Rule;
 class PedidoController extends Controller
 {
     /**
@@ -37,18 +37,33 @@ class PedidoController extends Controller
     $productos = Producto::whereIn('id', array_keys($carrito))->get();
     $total = $productos->sum(fn ($producto) => $producto->precio * $carrito[$producto->id]);
 
+    $zonas = Zona::activas()->orderBy('nombre')->get();
+
     return view('pedidos.create', compact('productos', 'carrito', 'total', 'zonas'));
 }
 
     /**
      * Store a newly created resource in storage.
      */
+    
     public function store(Request $request)
 {
     $datos = $request->validate([
+        // NUEVO: entrega
+        'tipo_entrega'     => 'required|in:recojo,delivery',
+        'zona_id'          => ['required_if:tipo_entrega,delivery', 'nullable',
+                               Rule::exists('zonas', 'id')->where('estado', true)],
+        'aula'             => 'required_if:tipo_entrega,delivery|nullable|string|max:50',
+        'referencia'       => 'nullable|string|max:100',
+        'hora'             => ['required_if:tipo_entrega,delivery', 'nullable',
+                               Rule::in(array_keys(Pedido::HORAS))],
+        // Pago (lo mejoramos en el Paso 7)
         'celular'          => 'required|digits:9',
         'metodo_pago'      => 'required|in:yape,plin',
         'numero_operacion' => 'required|string|max:20',
+    ], [], [
+        'zona_id' => 'zona',
+        'hora'    => 'hora de entrega',
     ]);
 
     $carrito = session('carrito', []);
@@ -64,12 +79,30 @@ class PedidoController extends Controller
         }
     }
 
-    $total = $productos->sum(fn ($p) => $p->precio * $carrito[$p->id]);
+    // NUEVO: hora, límite y costo según el tipo de entrega
+    if ($datos['tipo_entrega'] === 'delivery') {
+        $horaEntrega   = today()->setTimeFromTimeString($datos['hora']);
+        $limite        = $horaEntrega->copy()->addMinutes(Pedido::MINUTOS_LIMITE);
+        $costoDelivery = Pedido::COSTO_DELIVERY;
+    } else {
+        $horaEntrega   = null;
+        $limite        = today()->setTimeFromTimeString(Pedido::HORA_CIERRE);
+        $costoDelivery = 0;
+        $datos['zona_id'] = null;
+        $datos['aula'] = null;
+        $datos['referencia'] = null;
+    }
+    unset($datos['hora']); // "hora" no es una columna: se guarda como hora_entrega
 
-    $pedido = DB::transaction(function () use ($datos, $productos, $carrito, $total) {
+    $total = $productos->sum(fn ($p) => $p->precio * $carrito[$p->id]) + $costoDelivery; // NUEVO: + delivery
+
+    $pedido = DB::transaction(function () use ($datos, $productos, $carrito, $total, $horaEntrega, $limite, $costoDelivery) {
         $pedido = Pedido::create($datos + [
-            'user_id' => auth()->id(),
-            'total'   => $total,
+            'user_id'        => auth()->id(),
+            'hora_entrega'   => $horaEntrega,     // NUEVO
+            'limite_entrega' => $limite,          // NUEVO
+            'costo_delivery' => $costoDelivery,   // NUEVO
+            'total'          => $total,
         ]);
 
         $pedido->update(['codigo' => 'TL-' . str_pad($pedido->id, 4, '0', STR_PAD_LEFT)]);
@@ -94,14 +127,14 @@ class PedidoController extends Controller
         ->with('exito', 'Pedido ' . $pedido->codigo . ' registrado.');
 }
 
-    /**
-     * Display the specified resource.
-     */
+
+
+
     public function show(Pedido $pedido)
 {
     abort_if($pedido->user_id !== auth()->id(), 403);
 
-    $pedido->load('detalles.producto');
+    $pedido->load('detalles.producto' , 'zona');
 
     return view('pedidos.show', compact('pedido'));
 }

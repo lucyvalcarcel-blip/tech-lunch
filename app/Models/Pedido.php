@@ -40,7 +40,16 @@ class Pedido extends Model
     {
         return $this->hasMany(DetallePedido::class);
     }
-    public function usuario(): BelongsTo
+
+
+
+    
+       public function usuario(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function zona(): BelongsTo
     {
         return $this->belongsTo(Zona::class);
     }
