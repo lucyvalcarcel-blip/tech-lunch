@@ -103,6 +103,9 @@ class ProductoController extends Controller
      */
     public function destroy(Producto $producto)
     {
-        //
+        $producto->update(['estado' => false]);
+
+        return redirect()->route('admin.productos.index')
+            ->with('exito', 'Producto desactivado correctamente.');
     }
 }

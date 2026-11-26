@@ -53,7 +53,7 @@ Route::middleware(['auth', 'role:administrador'])
 
         // CRUD de Productos (Fabrizio)
         Route::resource('productos', ProductoController::class)
-            ->except(['show', 'destroy']);
+            ->except(['show']);
 
         // CRUD de Ofertas (Ingrid)
         Route::resource('ofertas', OfertaController::class)->except(['show']);

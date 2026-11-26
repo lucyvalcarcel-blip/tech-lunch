@@ -48,6 +48,17 @@
                                    class="btn btn-warning btn-icono" aria-label="Editar">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+                                {{-- Desactivar: solo si está activo --}}
+                                @if ($producto->estado)
+                                    <form method="POST" action="{{ route('admin.productos.destroy', $producto) }}" class="d-inline"
+                                          onsubmit="return confirm('¿Desactivar {{ $producto->nombre }}? Dejará de verse en el menú.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-outline-danger btn-icono" title="Desactivar">
+                                            <i class="bi bi-slash-circle"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
