@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\OfertaController;
 // Panel del administrador
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ProductoController;
+use App\Http\Controllers\Admin\CuponController;   // (Gabriel)
 
 // ===== Sitio público =====
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
@@ -52,6 +53,12 @@ Route::middleware(['auth', 'role:administrador'])
         // CRUD de Productos (Fabrizio)
         Route::resource('productos', ProductoController::class)
             ->except(['show', 'destroy']);
+
         // CRUD de Ofertas (Ingrid)
         Route::resource('ofertas', OfertaController::class)->except(['show']);
+
+        // CRUD de Cupones (Gabriel)
+        Route::resource('cupones', CuponController::class)
+            ->except(['show'])
+            ->parameters(['cupones' => 'cupon']);
     });
