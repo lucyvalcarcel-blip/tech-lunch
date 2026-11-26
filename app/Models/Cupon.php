@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable(['codigo', 'descripcion', 'porcentaje', 'fecha_inicio', 'fecha_fin', 'estado'])]
 class Cupon extends Model
@@ -47,5 +48,10 @@ class Cupon extends Model
             return 'Vencido';
         }
         return 'Vigente';
+    }
+    // El pedido donde se canjeó este cupón (o null si no se usó)
+    public function pedido(): HasOne
+    {
+        return $this->hasOne(Pedido::class);
     }
 }
