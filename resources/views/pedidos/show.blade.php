@@ -25,6 +25,27 @@
 
             {{-- Código del pedido (TL-0001) --}}
             <div class="display-6 fw-bold mb-4">{{ $pedido->codigo }}</div>
+            {{-- (Fabrizio) ESTADO DEL PEDIDO --}}
+            @php
+                $pasos = [\App\Models\Pedido::PENDIENTE => 'Pago en revisión', \App\Models\Pedido::CONFIRMADO => 'Confirmado', \App\Models\Pedido::ENTREGADO => 'Entregado'];
+                $posicion = array_search($pedido->estado, array_keys($pasos));   // false si es Rechazado o No llegó
+            @endphp
+
+            @if ($posicion !== false)
+                {{-- Los 3 pasos: se pintan los que ya pasaron --}}
+                <div class="d-flex justify-content-between mb-4">
+                    @foreach (array_values($pasos) as $i => $texto)
+                        <div class="flex-fill text-center">
+                            <i class="bi {{ $i <= $posicion ? 'bi-check-circle-fill text-success' : 'bi-circle text-muted' }} fs-4"></i>
+                            <small class="d-block {{ $i <= $posicion ? 'fw-semibold' : 'text-muted' }}">{{ $texto }}</small>
+                        </div>
+                    @endforeach
+                </div>
+            @elseif ($pedido->estado === \App\Models\Pedido::RECHAZADO)
+                <div class="alert alert-danger">No pudimos validar tu pago. Comunícate con el cafetín por WhatsApp.</div>
+            @else
+                <div class="alert alert-secondary">No te encontramos a tiempo en el lugar de entrega.</div>
+            @endif
 
             {{-- ---------- DATOS DE LA ENTREGA ---------- --}}
             <div class="text-start rounded-4 p-3 mb-4 small" style="background:var(--tl-fondo)">

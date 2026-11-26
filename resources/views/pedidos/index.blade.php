@@ -20,6 +20,7 @@
                                 <th>Fecha</th>
                                 <th class="text-center">Productos</th>
                                 <th class="text-end">Total</th>
+                                <th>Estado</th> {{-- (Fabrizio) --}}
                                 <th class="text-center">Detalle</th>
                             </tr>
                         </thead>
@@ -30,6 +31,8 @@
                                     <td>{{ $pedido->created_at->format('d/m/Y H:i') }}</td>
                                     <td class="text-center">{{ $pedido->detalles_count }}</td>
                                     <td class="text-end">S/ {{ number_format($pedido->total, 2) }}</td>
+                                    {{-- (Fabrizio) Estado con su color --}}
+                                    <td><span class="badge text-bg-{{ \App\Models\Pedido::COLORES[$pedido->estado] }}">{{ $pedido->estado }}</span></td>
                                     <td class="text-center">
                                         <a href="{{ route('pedidos.show', $pedido) }}" class="btn btn-tl-borde btn-sm">Ver</a>
                                     </td>
