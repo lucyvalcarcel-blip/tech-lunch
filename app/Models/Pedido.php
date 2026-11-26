@@ -35,6 +35,14 @@ class Pedido extends Model
     public const RECHAZADO = 'Rechazado';
     public const NO_LLEGO = 'No llegó';
     public const ESTADOS = [self::PENDIENTE, self::CONFIRMADO, self::ENTREGADO, self::RECHAZADO, self::NO_LLEGO];
+    // Color del badge de cada estado (lo usan el admin y el cliente)
+    public const COLORES = [
+        self::PENDIENTE => 'warning',
+        self::CONFIRMADO => 'info',
+        self::ENTREGADO => 'success',
+        self::RECHAZADO => 'danger',
+        self::NO_LLEGO => 'secondary',
+    ];
 
     // Un pedido nuevo empieza Pendiente (el encargado valida el pago)
     protected $attributes = ['estado' => self::PENDIENTE];

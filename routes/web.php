@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\OfertaController;
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\CuponController;   // (Gabriel)
+use App\Http\Controllers\Admin\PedidoController as AdminPedidoController;   // (Fabrizio)
 
 // ===== Sitio público =====
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
@@ -61,4 +62,8 @@ Route::middleware(['auth', 'role:administrador'])
         Route::resource('cupones', CuponController::class)
             ->except(['show'])
             ->parameters(['cupones' => 'cupon']);
+
+        // Proceso secundario: pedidos del encargado (Fabrizio)
+        Route::get('pedidos', [AdminPedidoController::class, 'index'])->name('pedidos.index');
+        Route::get('pedidos/{pedido}', [AdminPedidoController::class, 'show'])->name('pedidos.show');
     });
