@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['codigo', 'user_id', 'celular', 'tipo_entrega', 'zona_id', 'aula', 'referencia',
     'hora_entrega', 'limite_entrega', 'costo_delivery', 'cupon_id', 'descuento', 'metodo_pago', 'numero_operacion',
-    'tarjeta_marca', 'tarjeta_ultimos4', 'cuotas', 'total'])]   // (Gabriel) + cupon_id, descuento
+    'tarjeta_marca', 'tarjeta_ultimos4', 'cuotas', 'total', 'estado'])]   // (Gabriel) + cupon_id, descuento
 
 
 class Pedido extends Model
@@ -27,6 +27,18 @@ class Pedido extends Model
         '14:00' => '2:00 p. m.',
         '14:30' => '2:30 p. m.',
     ];
+
+    // (Fabrizio) Estados del pedido
+    public const PENDIENTE = 'Pendiente';
+    public const CONFIRMADO = 'Confirmado';
+    public const ENTREGADO = 'Entregado';
+    public const RECHAZADO = 'Rechazado';
+    public const NO_LLEGO = 'No llegó';
+    public const ESTADOS = [self::PENDIENTE, self::CONFIRMADO, self::ENTREGADO, self::RECHAZADO, self::NO_LLEGO];
+
+    // Un pedido nuevo empieza Pendiente (el encargado valida el pago)
+    protected $attributes = ['estado' => self::PENDIENTE];
+
 
     protected function casts(): array
     {
@@ -59,5 +71,27 @@ class Pedido extends Model
     public function cupon(): BelongsTo
     {
         return $this->belongsTo(Cupon::class);
+    }
+
+    // (Fabrizio) Qué botón puede usar el encargado según el estado
+    public function puedeValidar(): bool
+    {
+        return $this->estado === self::PENDIENTE;
+    }
+
+    public function puedeRechazar(): bool
+    {
+        return $this->estado === self::PENDIENTE;
+    }
+
+    public function puedeEntregar(): bool
+    {
+        return $this->estado === self::CONFIRMADO;
+    }
+
+    // "No llegó" solo después del tiempo límite
+    public function puedeMarcarNoLlego(): bool
+    {
+        return $this->estado === self::CONFIRMADO && now()->greaterThan($this->limite_entrega);
     }
 }
