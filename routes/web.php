@@ -66,4 +66,5 @@ Route::middleware(['auth', 'role:administrador'])
         // Proceso secundario: pedidos del encargado (Fabrizio)
         Route::get('pedidos', [AdminPedidoController::class, 'index'])->name('pedidos.index');
         Route::get('pedidos/{pedido}', [AdminPedidoController::class, 'show'])->name('pedidos.show');
+        Route::patch('pedidos/{pedido}/estado', [AdminPedidoController::class, 'cambiarEstado'])->name('pedidos.estado');
     });
