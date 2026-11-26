@@ -44,9 +44,13 @@
                             <td>{{ $cupon->fecha_inicio->format('d/m/Y') }} – {{ $cupon->fecha_fin->format('d/m/Y') }}</td>
                             <td><span class="badge text-bg-{{ $colores[$situacion] }}">{{ $situacion }}</span></td>
                             <td class="text-center text-nowrap">
-                                <a href="{{ route('admin.cupones.edit', $cupon) }}" class="btn btn-sm btn-outline-primary btn-icono" title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
+                                 @if ($cupon->estado !== \App\Models\Cupon::USADO)
+                                    <a href="{{ route('admin.cupones.edit', $cupon) }}" class="btn btn-sm btn-outline-primary btn-icono" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                @else
+                                    <span class="text-muted small">Canjeado</span>
+                                @endif
                                 {{-- El botón Desactivar se agrega en el Paso 5 --}}
                             </td>
                         </tr>
