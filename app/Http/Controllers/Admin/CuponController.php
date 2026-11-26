@@ -56,6 +56,17 @@ class CuponController extends Controller
         return redirect()->route('admin.cupones.index')
             ->with('exito', 'Cupón actualizado correctamente.');
     }
+    // Eliminación LÓGICA: no se borra, solo pasa a Inactivo
+    public function destroy(Cupon $cupon)
+    {
+        // Un cupón usado se queda como "Usado": es el registro de que ya se canjeó
+        abort_if($cupon->estado === Cupon::USADO, 403, 'Un cupón usado no se puede desactivar.');
+
+        $cupon->update(['estado' => Cupon::INACTIVO]);
+
+        return redirect()->route('admin.cupones.index')
+            ->with('exito', 'Cupón desactivado correctamente.');
+    }
 
     // Reglas de validación: las usan store() y update() (Paso 4)
     // $cupon llega solo al editar, para que "unique" no choque con el mismo cupón

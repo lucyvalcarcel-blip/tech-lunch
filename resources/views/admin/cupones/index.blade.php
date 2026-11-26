@@ -51,7 +51,17 @@
                                 @else
                                     <span class="text-muted small">Canjeado</span>
                                 @endif
-                                {{-- El botón Desactivar se agrega en el Paso 5 --}}
+                                {{-- Desactivar: solo para cupones Disponibles --}}
+                                @if ($cupon->estado === \App\Models\Cupon::DISPONIBLE)
+                                <form method="POST" action="{{ route('admin.cupones.destroy', $cupon) }}" class="d-inline"
+                                onsubmit="return confirm('¿Desactivar el cupón {{ $cupon->codigo }}?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-icono" title="Desactivar">
+                                    <i class="bi bi-slash-circle"></i>
+                                </button>
+                            </form>
+                            @endif
                             </td>
                         </tr>
                     @empty
