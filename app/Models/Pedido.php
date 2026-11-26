@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 #[Fillable(['codigo', 'user_id', 'celular', 'tipo_entrega', 'zona_id', 'aula', 'referencia',
-    'hora_entrega', 'limite_entrega', 'costo_delivery', 'metodo_pago', 'numero_operacion',
-    'tarjeta_marca', 'tarjeta_ultimos4', 'cuotas', 'total'])]
+    'hora_entrega', 'limite_entrega', 'costo_delivery', 'cupon_id', 'descuento', 'metodo_pago', 'numero_operacion',
+    'tarjeta_marca', 'tarjeta_ultimos4', 'cuotas', 'total'])]   // (Gabriel) + cupon_id, descuento
 
 
 class Pedido extends Model
@@ -32,6 +32,7 @@ class Pedido extends Model
     {
         return ['total' => 'decimal:2',
                  'costo_delivery' => 'decimal:2',
+                 'descuento' => 'decimal:2',          // (Gabriel)
                  'hora_entrega' => 'datetime',
                  'limite_entrega' => 'datetime',
                  'cuotas' => 'integer',];
@@ -52,5 +53,11 @@ class Pedido extends Model
     public function zona(): BelongsTo
     {
         return $this->belongsTo(Zona::class);
+    }
+
+    // (Gabriel) El cupón que se usó en este pedido (o null)
+    public function cupon(): BelongsTo
+    {
+        return $this->belongsTo(Cupon::class);
     }
 }
