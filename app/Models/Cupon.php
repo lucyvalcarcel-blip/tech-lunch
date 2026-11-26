@@ -34,4 +34,18 @@ class Cupon extends Model
             ->whereDate('fecha_inicio', '<=', today())
             ->whereDate('fecha_fin', '>=', today());
     }
+    // Texto del estado para mostrar en el listado del admin
+    public function situacion(): string
+    {
+        if ($this->estado !== self::DISPONIBLE) {
+            return $this->estado;          // "Usado" o "Inactivo"
+        }
+        if ($this->fecha_inicio->isFuture()) {
+            return 'Programado';
+        }
+        if ($this->fecha_fin->lt(today())) {
+            return 'Vencido';
+        }
+        return 'Vigente';
+    }
 }
