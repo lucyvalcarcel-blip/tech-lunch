@@ -78,6 +78,14 @@
                     @endif
                 </div>
 
+                {{-- (Gabriel) Descuento del cupón, si se usó uno (monto guardado al pagar) --}}
+                @if ($pedido->cupon)
+                    <div class="d-flex justify-content-between mb-2 text-success">
+                        <span>Cupón {{ $pedido->cupon->codigo }}</span>
+                        <span>− S/ {{ number_format($pedido->descuento, 2) }}</span>
+                    </div>
+                @endif
+
                 <hr>
 
                 {{-- Total guardado en la base (calculado por Laravel, no por el navegador) --}}

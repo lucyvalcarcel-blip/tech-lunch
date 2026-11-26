@@ -54,4 +54,9 @@ class Cupon extends Model
     {
         return $this->hasOne(Pedido::class);
     }
+    // Cuánto se descuenta, en soles: 20 % de S/ 20.00 = S/ 4.00
+    public function calcularDescuento(float $subtotal): float
+    {
+        return round($subtotal * $this->porcentaje / 100, 2);
+    }
 }

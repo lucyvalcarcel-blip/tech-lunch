@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Producto;
 use Illuminate\Support\Facades\DB;
 use App\Models\Zona;
+use App\Models\Cupon;   // (Gabriel)
 use Illuminate\Validation\Rule;
 class PedidoController extends Controller
 {
@@ -21,7 +22,7 @@ class PedidoController extends Controller
 }
 
     
-    public function create()
+public function create(Request $request)   // (Gabriel) recibe el ?cupon= del botón "Aplicar"
     {
     $carrito = session('carrito', []);
 
@@ -35,7 +36,21 @@ class PedidoController extends Controller
 
     $zonas = Zona::activas()->orderBy('nombre')->get();
 
-    return view('pedidos.create', compact('productos', 'carrito', 'total', 'zonas'));
+    // (Gabriel) Cupón: solo para MOSTRAR el descuento antes de pagar.
+    // La validación definitiva se repite en store(), al pagar.
+    $cupon = null;
+    $descuento = 0;
+    $errorCupon = null;
+    if ($request->filled('cupon')) {
+        $cupon = Cupon::vigentes()->where('codigo', strtoupper(trim($request->cupon)))->first();
+        if ($cupon) {
+            $descuento = $cupon->calcularDescuento($total);
+        } else {
+            $errorCupon = 'El cupón no existe, ya fue usado o no está vigente.';
+        }
+    }
+
+    return view('pedidos.create', compact('productos', 'carrito', 'total', 'zonas', 'cupon', 'descuento', 'errorCupon'));
 }
 
     /**
@@ -80,6 +95,8 @@ class PedidoController extends Controller
                 }],
             'cvv'              => 'required_if:metodo_pago,debito,credito|nullable|digits:3',
             'cuotas'           => 'required_if:metodo_pago,credito|nullable|integer|in:1,3,6',
+            // (Gabriel) Cupón (opcional)
+            'cupon'            => 'nullable|string|max:20',
         ], [], [
             'zona_id'          => 'zona',
             'hora'             => 'hora de entrega',
@@ -145,15 +162,45 @@ class PedidoController extends Controller
 
 
 
-    // (Ingrid) El total usa precioFinal(): precio de oferta si tiene una vigente
-    $total = $productos->sum(fn ($p) => $p->precioFinal() * $carrito[$p->id]) + $costoDelivery; // NUEVO: + delivery
+    // (Ingrid) El subtotal usa precioFinal(): precio de oferta si tiene una vigente
+    $subtotal = $productos->sum(fn ($p) => $p->precioFinal() * $carrito[$p->id]);
 
-    $pedido = DB::transaction(function () use ($datos, $productos, $carrito, $total, $horaEntrega, $limite, $costoDelivery) {
+    // (Gabriel) Se VUELVE a validar el cupón al pagar: pudo vencer o usarse mientras tanto
+    $cupon = null;
+    $descuento = 0;
+    if (! empty($datos['cupon'])) {
+        $cupon = Cupon::vigentes()->where('codigo', strtoupper(trim($datos['cupon'])))->first();
+        if (! $cupon) {
+            return back()->withInput($request->except('numero_tarjeta', 'cvv'))
+                ->with('error', 'El cupón ya no es válido: no existe, ya fue usado o venció.');
+        }
+        $descuento = $cupon->calcularDescuento($subtotal);   // el % se aplica a los productos, no al delivery
+    }
+    unset($datos['cupon']); // "cupon" no es una columna: se guarda como cupon_id
+
+    $total = $subtotal - $descuento + $costoDelivery; // NUEVO: + delivery  (Gabriel) - descuento
+
+    $pedido = DB::transaction(function () use ($datos, $productos, $carrito, $total, $horaEntrega, $limite, $costoDelivery, $cupon, $descuento) {
+
+        // (Gabriel) Primero se marca el cupón como Usado, SOLO si sigue Disponible.
+        // update() devuelve cuántas filas cambió: 0 = otro pedido lo usó un instante antes.
+        if ($cupon) {
+            $marcado = Cupon::whereKey($cupon->id)
+                ->where('estado', Cupon::DISPONIBLE)
+                ->update(['estado' => Cupon::USADO]);
+
+            if ($marcado === 0) {
+                return null;   // no se crea nada: el pedido no se registra
+            }
+        }
+
         $pedido = Pedido::create($datos + [
             'user_id'        => auth()->id(),
             'hora_entrega'   => $horaEntrega,     // NUEVO
             'limite_entrega' => $limite,          // NUEVO
             'costo_delivery' => $costoDelivery,   // NUEVO
+            'cupon_id'       => $cupon?->id,      // (Gabriel)
+            'descuento'      => $descuento,       // (Gabriel)
             'total'          => $total,
         ]);
 
@@ -172,6 +219,12 @@ class PedidoController extends Controller
 
         return $pedido;
     });
+
+    // (Gabriel) Si el cupón se usó justo antes, no se registró nada
+    if (! $pedido) {
+        return back()->withInput($request->except('numero_tarjeta', 'cvv'))
+            ->with('error', 'El cupón acaba de ser usado en otro pedido. Intenta sin cupón.');
+    }
 
     session()->forget('carrito');
 
@@ -212,7 +265,7 @@ class PedidoController extends Controller
 {
     abort_if($pedido->user_id !== auth()->id(), 403);
 
-    $pedido->load('detalles.producto' , 'zona');
+    $pedido->load('detalles.producto' , 'zona', 'cupon');   // (Gabriel) + cupon
 
     return view('pedidos.show', compact('pedido'));
 }
