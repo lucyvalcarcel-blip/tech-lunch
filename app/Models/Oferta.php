@@ -1,5 +1,5 @@
 <?php
-//* Ofertas 
+//* Ofertas
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -34,12 +34,6 @@ class Oferta extends Model
     }
 
     // Oferta::vigentes() -> activas y con hoy dentro de sus fechas
-    // Precio que se cobra HOY: el de oferta si tiene una vigente, si no el normal
-    public function precioFinal(): float
-    {
-        return (float) ($this->ofertaVigente?->precio_oferta ?? $this->precio);
-    }
-
     #[Scope]
     protected function vigentes(Builder $consulta): void
     {
