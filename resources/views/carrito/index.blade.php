@@ -30,7 +30,7 @@
 
                                 <div class="flex-grow-1">
                                     <strong class="d-block">{{ $item['producto']->nombre }}</strong>
-                                    <small class="text-gris">S/ {{ $item['producto']->precioFinal(), 2 }} c/u</small>
+                                    <small class="text-gris">S/ {{ number_format($item['producto']->precioFinal(), 2) }} c/u</small>
                                 </div>
 
                                 {{-- Botones − y + --}}
