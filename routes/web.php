@@ -8,14 +8,14 @@ use App\Http\Controllers\InformacionController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
-use App\Http\Controllers\Admin\OfertaController;
+
 
 
 // Panel del administrador
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\CuponController;   // (Gabriel)
-
+use App\Http\Controllers\Admin\OfertaController;
 // ===== Sitio público =====
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
