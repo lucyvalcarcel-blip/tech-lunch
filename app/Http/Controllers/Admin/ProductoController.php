@@ -7,7 +7,8 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Categoria;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Storage;   // (Fabrizio) para borrar imágenes
+
 
 class ProductoController extends Controller
 {
@@ -46,12 +47,12 @@ class ProductoController extends Controller
             'categoria_id' => ['required', 'exists:categorias,id'],
             'destacado'    => ['required', 'boolean'],
             'estado'       => ['required', 'boolean'],
-            'imagen'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'imagen'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],   // (Fabrizio)
         ], [], [
             'categoria_id' => 'categoría',
         ]);
 
-        // Guarda el archivo en storage/app/public/productos y deja su ruta en la base
+        // (Fabrizio) Guarda el archivo en storage/app/public/productos y deja su ruta en la base
         if ($request->hasFile('imagen')) {
             $datos['imagen'] = $request->file('imagen')->store('productos', 'public');
         }
@@ -94,12 +95,12 @@ class ProductoController extends Controller
             'categoria_id' => ['required', 'exists:categorias,id'],
             'destacado'    => ['required', 'boolean'],
             'estado'       => ['required', 'boolean'],
-            'imagen'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'imagen'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],   // (Fabrizio)
         ], [], [
             'categoria_id' => 'categoría',
         ]);
 
-        // (Fabrizio) Guarda la foto nueva y borra la anterior
+        // (Fabrizio) Si sube una foto nueva: borra la anterior y guarda la nueva
         if ($request->hasFile('imagen')) {
             if ($producto->imagen) {
                 Storage::disk('public')->delete($producto->imagen);
@@ -113,9 +114,7 @@ class ProductoController extends Controller
             ->with('exito', 'Producto actualizado correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // (Fabrizio) Eliminación LÓGICA: no se borra, solo se desactiva (deja de verse en el menú)
     public function destroy(Producto $producto)
     {
         $producto->update(['estado' => false]);
