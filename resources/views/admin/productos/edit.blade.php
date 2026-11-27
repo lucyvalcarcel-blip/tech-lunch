@@ -5,7 +5,7 @@
 
 @section('contenido')
     <div class="tarjeta p-4" style="max-width: 640px">
-        <form action="{{ route('admin.productos.update', $producto) }}" method="POST">
+        <form action="{{ route('admin.productos.update', $producto) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

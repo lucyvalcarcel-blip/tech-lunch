@@ -7,7 +7,7 @@ use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Categoria;
-
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
@@ -46,9 +46,15 @@ class ProductoController extends Controller
             'categoria_id' => ['required', 'exists:categorias,id'],
             'destacado'    => ['required', 'boolean'],
             'estado'       => ['required', 'boolean'],
+            'imagen'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [], [
             'categoria_id' => 'categoría',
         ]);
+
+        // Guarda el archivo en storage/app/public/productos y deja su ruta en la base
+        if ($request->hasFile('imagen')) {
+            $datos['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
 
         Producto::create($datos);
 
@@ -88,9 +94,18 @@ class ProductoController extends Controller
             'categoria_id' => ['required', 'exists:categorias,id'],
             'destacado'    => ['required', 'boolean'],
             'estado'       => ['required', 'boolean'],
+            'imagen'       => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ], [], [
             'categoria_id' => 'categoría',
         ]);
+
+        // (Fabrizio) Guarda la foto nueva y borra la anterior
+        if ($request->hasFile('imagen')) {
+            if ($producto->imagen) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+            $datos['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
 
         $producto->update($datos);
 

@@ -76,4 +76,18 @@
             <option value="0" @selected($estadoActual == '0')>Inactivo</option>
         </select>
     </div>
+    
+    {{-- (Fabrizio) Imagen del producto (opcional) --}}
+    <div class="col-12">
+        <label for="imagen" class="form-label">Imagen <small class="text-muted">(JPG, PNG o WEBP, máx. 2 MB)</small></label>
+        @if ($producto->imagen ?? false)
+            <div class="mb-2">
+                <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Imagen actual" style="height:80px;border-radius:8px">
+                <small class="text-muted ms-2">Imagen actual. Sube otra para reemplazarla.</small>
+            </div>
+        @endif
+        <input type="file" id="imagen" name="imagen" accept="image/*"
+               class="form-control @error('imagen') is-invalid @enderror">
+        @error('imagen') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    </div>
 </div>

@@ -28,7 +28,12 @@
                         <div class="col-sm-6 col-lg-3">
                             <div class="tarjeta tarjeta-hover h-100 {{ $producto->stock === 0 ? 'agotado' : '' }}">
                                 <div class="producto-img {{ $categoria->clase_imagen }}">
-                                    <i class="bi {{ $categoria->icono }}"></i>
+                                    {{-- (Fabrizio) Foto si tiene; si no, el ícono de la categoría --}}
+                                    @if ($producto->imagen)
+                                        <img src="{{ asset('storage/' . $producto->imagen) }}" alt="{{ $producto->nombre }}" class="w-100 h-100 object-fit-cover">
+                                    @else
+                                        <i class="bi {{ $categoria->icono }}"></i>
+                                    @endif
                                 </div>
 
                                 <div class="p-3">
