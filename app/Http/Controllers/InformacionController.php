@@ -41,7 +41,7 @@ class InformacionController extends Controller
             ],
             [
                 'pregunta' => '¿Cómo sé que mi pedido está listo?',
-                'respuesta' => 'Revisa Mis pedidos. Cuando el estado cambie a Listo, ya puedes recogerlo en el cafetín con tu código de pedido.',
+                'respuesta' => 'Revisa Mis pedidos. Tu pedido pasa por 3 estados: Pago en revisión, Confirmado y Entregado. Si es delivery, te esperamos en tu aula hasta 10 minutos después de la hora elegida.',
             ],
             [
                 'pregunta' => '¿Para qué sirve el código de pedido?',

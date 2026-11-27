@@ -9,13 +9,13 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\PedidoController;
 
-
-
 // Panel del administrador
 use App\Http\Controllers\Admin\CategoriaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\CuponController;   // (Gabriel)
-use App\Http\Controllers\Admin\OfertaController;
+use App\Http\Controllers\Admin\OfertaController;  // (Ingrid)
+use App\Http\Controllers\Admin\PedidoController as AdminPedidoController;  // (Fabrizio)
+
 // ===== Sitio público =====
 Route::get('/', [HomeController::class, 'index'])->name('inicio');
 Route::get('/menu', [MenuController::class, 'index'])->name('menu');
@@ -52,7 +52,7 @@ Route::middleware(['auth', 'role:administrador'])
 
         // CRUD de Productos (Fabrizio)
         Route::resource('productos', ProductoController::class)
-            ->except(['show', 'destroy']);
+            ->except(['show']);
 
         // CRUD de Ofertas (Ingrid)
         Route::resource('ofertas', OfertaController::class)->except(['show']);
@@ -61,4 +61,9 @@ Route::middleware(['auth', 'role:administrador'])
         Route::resource('cupones', CuponController::class)
             ->except(['show'])
             ->parameters(['cupones' => 'cupon']);
+
+        // Proceso secundario: pedidos del encargado (Fabrizio)
+        Route::get('pedidos', [AdminPedidoController::class, 'index'])->name('pedidos.index');
+        Route::get('pedidos/{pedido}', [AdminPedidoController::class, 'show'])->name('pedidos.show');
+        Route::patch('pedidos/{pedido}/estado', [AdminPedidoController::class, 'cambiarEstado'])->name('pedidos.estado');
     });

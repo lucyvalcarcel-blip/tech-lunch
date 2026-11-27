@@ -4,6 +4,7 @@
      A la derecha ve el resumen y confirma.
      Datos que llegan del controlador (PedidoController@create):
        $productos, $carrito, $total, $zonas
+       (Gabriel) $cupon, $descuento, $errorCupon
      ============================================================ --}}
 <x-layout>
     <x-slot:titulo>Confirmar pedido</x-slot>
@@ -258,10 +259,47 @@
                         @endforeach
                         <hr>
 
+                        {{-- (Gabriel) CUPÓN DE DESCUENTO --}}
+                        <div class="mb-3">
+                            <label for="cupon" class="form-label small text-gris mb-1">¿Tienes un cupón?</label>
+
+                            @if ($cupon)
+                                {{-- Cupón aplicado: se muestra y viaja OCULTO con el pedido --}}
+                                <div class="alert alert-success d-flex justify-content-between align-items-center py-2 mb-0">
+                                    <span>
+                                        <i class="bi bi-ticket-perforated me-1"></i>
+                                        <strong class="font-monospace">{{ $cupon->codigo }}</strong> · {{ $cupon->porcentaje }} %
+                                    </span>
+                                    <a href="{{ route('pedidos.create') }}" class="small">Quitar</a>
+                                </div>
+                                <input type="hidden" name="cupon" value="{{ $cupon->codigo }}">
+                            @else
+                                {{-- form="formCupon": este campo y el botón pertenecen al formulario
+                                     del cupón (más abajo), NO al del pedido --}}
+                                <div class="input-group">
+                                    <input type="text" id="cupon" name="cupon" form="formCupon" maxlength="20"
+                                           value="{{ request('cupon') }}" placeholder="Ej: TECSUP20"
+                                           class="form-control text-uppercase font-monospace {{ $errorCupon ? 'is-invalid' : '' }}">
+                                    <button type="submit" form="formCupon" class="btn btn-outline-secondary">Aplicar</button>
+                                </div>
+                                @if ($errorCupon)
+                                    <div class="small text-danger mt-1">{{ $errorCupon }}</div>
+                                @endif
+                            @endif
+                        </div>
+
                         <div class="d-flex justify-content-between mb-2">
                             <span class="text-gris">Subtotal</span>
                             <span>S/ {{ number_format($total, 2) }}</span>
                         </div>
+
+                        {{-- (Gabriel) Línea del descuento: solo si hay cupón aplicado --}}
+                        @if ($cupon)
+                            <div class="d-flex justify-content-between mb-2 text-success">
+                                <span>Cupón {{ $cupon->codigo }} (−{{ $cupon->porcentaje }} %)</span>
+                                <span>− S/ {{ number_format($descuento, 2) }}</span>
+                            </div>
+                        @endif
 
                         {{-- Línea del delivery (el script la muestra solo con delivery) --}}
                         <div id="filaDelivery" class="d-flex justify-content-between mb-2">
@@ -270,11 +308,11 @@
                         </div>
                         <hr>
 
-                        {{-- Total en pantalla (el script le suma el delivery).
+                        {{-- Total en pantalla (el script le resta el cupón y le suma el delivery).
                              El total REAL lo calcula Laravel al guardar --}}
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <strong>Total</strong>
-                            <span id="totalPagar" class="precio fs-4">S/ {{ number_format($total, 2) }}</span>
+                            <span id="totalPagar" class="precio fs-4">S/ {{ number_format($total - $descuento, 2) }}</span>
                         </div>
 
                         {{-- Botón para enviar. El id lo usa el script para "Procesando pago..." --}}
@@ -290,6 +328,12 @@
 
             </div>
         </form>
+
+        {{-- (Gabriel) Formulario SOLO del cupón. Va FUERA del formPedido porque
+             un formulario no puede ir dentro de otro. El campo y el botón "Aplicar"
+             se conectan a él con el atributo form="formCupon".
+             Envía por GET: recarga esta página con ?cupon=CODIGO --}}
+        <form id="formCupon" method="GET" action="{{ route('pedidos.create') }}"></form>
     </div>
 
     <script>
@@ -301,6 +345,7 @@
 
         // Valores que vienen de PHP (constantes del modelo Pedido)
         const subtotal = {{ $total }};
+        const descuento = {{ $descuento }};   // (Gabriel) 0 si no hay cupón
         const costoDelivery = {{ \App\Models\Pedido::COSTO_DELIVERY }};
         const minutosLimite = {{ \App\Models\Pedido::MINUTOS_LIMITE }};
         const horaCierre = '{{ \App\Models\Pedido::HORA_CIERRE }}';
@@ -313,7 +358,7 @@
 
             document.getElementById('camposDelivery').style.display = esDelivery ? 'flex' : 'none';
             document.getElementById('filaDelivery').style.setProperty('display', esDelivery ? 'flex' : 'none', 'important');
-            document.getElementById('totalPagar').innerText = 'S/ ' + (subtotal + (esDelivery ? costoDelivery : 0)).toFixed(2);
+            document.getElementById('totalPagar').innerText = 'S/ ' + (subtotal - descuento + (esDelivery ? costoDelivery : 0)).toFixed(2);
 
             // Recojo: se espera hasta la hora de cierre del cafetín
             if (!esDelivery) {

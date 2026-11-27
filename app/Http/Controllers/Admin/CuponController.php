@@ -35,6 +35,38 @@ class CuponController extends Controller
         return redirect()->route('admin.cupones.index')
             ->with('exito', 'Cupón creado correctamente.');
     }
+    // Muestra el formulario con los datos del cupón
+    public function edit(Cupon $cupon)
+    {
+        // Un cupón ya canjeado no se toca (aunque escriban la URL a mano)
+        abort_if($cupon->estado === Cupon::USADO, 403, 'Un cupón usado no se puede editar.');
+
+        return view('admin.cupones.edit', compact('cupon'));
+    }
+
+    // Guarda los cambios
+    public function update(Request $request, Cupon $cupon)
+    {
+        abort_if($cupon->estado === Cupon::USADO, 403, 'Un cupón usado no se puede editar.');
+
+        $datos = $this->validar($request, $cupon);   // las MISMAS reglas, ignorando su propio código
+
+        $cupon->update($datos);
+
+        return redirect()->route('admin.cupones.index')
+            ->with('exito', 'Cupón actualizado correctamente.');
+    }
+    // Eliminación LÓGICA: no se borra, solo pasa a Inactivo
+    public function destroy(Cupon $cupon)
+    {
+        // Un cupón usado se queda como "Usado": es el registro de que ya se canjeó
+        abort_if($cupon->estado === Cupon::USADO, 403, 'Un cupón usado no se puede desactivar.');
+
+        $cupon->update(['estado' => Cupon::INACTIVO]);
+
+        return redirect()->route('admin.cupones.index')
+            ->with('exito', 'Cupón desactivado correctamente.');
+    }
 
     // Reglas de validación: las usan store() y update() (Paso 4)
     // $cupon llega solo al editar, para que "unique" no choque con el mismo cupón
